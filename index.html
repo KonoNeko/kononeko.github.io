@@ -1,0 +1,2489 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- 统一的 Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00ffaa',
+                        secondary: '#0088ff',
+                        dark: '#121212',
+                        'dark-light': '#1e1e1e',
+                        'dark-lighter': '#2d2d2d',
+                        light: '#e0e0e0',
+                        'light-dark': '#a0a0a0'
+                    },
+                    fontFamily: {
+                        sans: ['Fira Code', 'Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'typing': 'typing 3.5s steps(40, end)',
+                        'blink-caret': 'blink-caret .75s step-end infinite',
+                    },
+                    keyframes: {
+                        typing: {
+                            'from': { width: '0' },
+                            'to': { width: '100%' }
+                        },
+                        'blink-caret': {
+                            'from, to': { borderColor: 'transparent' },
+                            '50%': { borderColor: '#00ffaa' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 0 10px rgba(0, 255, 170, 0.7);
+            }
+            .border-glow {
+                box-shadow: 0 0 5px rgba(0, 255, 170, 0.7);
+            }
+            .glass-effect {
+                background: rgba(30, 30, 30, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            .code-block {
+                font-family: 'Fira Code', monospace;
+                background-color: #1e1e1e;
+                border-left: 3px solid #00ffaa;
+            }
+            .skill-bar {
+                height: 8px;
+                border-radius: 4px;
+                background-color: #2d2d2d;
+                overflow: hidden;
+            }
+            .skill-progress {
+                height: 100%;
+                border-radius: 4px;
+                background: linear-gradient(90deg, #00ffaa, #0088ff);
+                transition: width 1.5s ease-in-out;
+            }
+            .project-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .project-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            }
+            .nav-link {
+                position: relative;
+                transition: color 0.3s ease;
+            }
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: -2px;
+                left: 0;
+                background-color: #00ffaa;
+                transition: width 0.3s ease;
+            }
+            .nav-link:hover::after,
+            .nav-link.active::after {
+                width: 100%;
+            }
+            .typing-effect {
+                overflow: hidden;
+                border-right: 2px solid #00ffaa;
+                white-space: nowrap;
+                margin: 0 auto;
+                animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+            }
+            @keyframes typing {
+                from { width: 0 }
+                to { width: 100% }
+            }
+            @keyframes blink-caret {
+                from, to { border-color: transparent }
+                50% { border-color: #00ffaa }
+            }
+            /* 鼠标跟随霓虹字母效果 */
+            .mouse-follower {
+                position: fixed;
+                pointer-events: none;
+                z-index: 9999;
+                mix-blend-mode: difference;
+                font-size: 24px;
+                font-weight: bold;
+                font-family: 'Fira Code', monospace;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .neon-letter {
+                display: inline-block;
+                color: #00ffaa;
+                text-shadow: 
+                    0 0 5px #00ffaa,
+                    0 0 10px #00ffaa,
+                    0 0 15px #00ffaa,
+                    0 0 20px #00ffaa,
+                    0 0 35px #00ffaa,
+                    0 0 40px #00ffaa;
+                animation: neon-flicker 2s ease-in-out infinite alternate;
+                margin: 0 2px;
+            }
+            @keyframes neon-flicker {
+                0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                    text-shadow: 
+                        0 0 5px #00ffaa,
+                        0 0 10px #00ffaa,
+                        0 0 15px #00ffaa,
+                        0 0 20px #00ffaa,
+                        0 0 35px #00ffaa,
+                        0 0 40px #00ffaa;
+                }
+                20%, 24%, 55% {
+                    text-shadow: none;
+                }
+            }
+            .letter-trail {
+                position: fixed;
+                pointer-events: none;
+                z-index: 9998;
+                font-size: var(--trail-font-size, 18px);
+                font-weight: bold;
+                font-family: 'Fira Code', monospace;
+                color: transparent;
+                background-image: var(--trail-gradient, linear-gradient(135deg, #00ffaa, #0088ff));
+                background-size: 200% 200%;
+                -webkit-background-clip: text;
+                background-clip: text;
+                text-shadow:
+                    0 0 4px var(--trail-color, rgba(0, 198, 255, 0.9)),
+                    0 0 8px var(--trail-glow, rgba(0, 198, 255, 0.6)),
+                    0 0 12px var(--trail-glow, rgba(0, 198, 255, 0.4));
+                opacity: 0.85;
+                transform: translate(-50%, -50%) scale(var(--trail-scale, 1)) rotate(var(--trail-rotate, 0deg));
+                animation: trail-fade var(--trail-duration, 1s) ease-out forwards, trail-spectrum 1.5s linear infinite;
+                will-change: transform, opacity, filter, background-position;
+            }
+            @keyframes trail-fade {
+                0% {
+                    opacity: 0.85;
+                    transform: translate(-50%, -50%) scale(var(--trail-scale, 1)) rotate(var(--trail-rotate, 0deg));
+                    background-position: 0% 50%;
+                }
+                100% {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(calc(var(--trail-scale, 1) * 1.6)) rotate(calc(var(--trail-rotate, 0deg) + 360deg));
+                    background-position: 100% 50%;
+                }
+            }
+            @keyframes trail-spectrum {
+                0% {
+                    filter: hue-rotate(0deg);
+                }
+                100% {
+                    filter: hue-rotate(360deg);
+                }
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark text-light min-h-screen flex flex-col">
+    <!-- 鼠标跟随霓虹字母 -->
+    <div id="mouse-follower" class="mouse-follower"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="bg-dark-light border-b border-dark-lighter sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-code text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-primary">Hongci.dev</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link active text-primary">首页</a>
+                <a href="#about" class="nav-link text-light-dark hover:text-primary">关于我</a>
+                <a href="#skills" class="nav-link text-light-dark hover:text-primary">技能</a>
+                <a href="#projects" class="nav-link text-light-dark hover:text-primary">项目</a>
+                <a href="#experience" class="nav-link text-light-dark hover:text-primary">经历</a>
+                <a href="#contact" class="nav-link text-light-dark hover:text-primary">联系</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="admin-toggle" class="text-light-dark hover:text-primary">
+                    <i class="fa fa-cog text-xl"></i>
+                </button>
+                <button class="md:hidden text-light-dark hover:text-primary" id="mobile-menu-button">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-light border-t border-dark-lighter">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#home" class="py-2 text-primary">首页</a>
+                <a href="#about" class="py-2 text-light-dark hover:text-primary">关于我</a>
+                <a href="#skills" class="py-2 text-light-dark hover:text-primary">技能</a>
+                <a href="#projects" class="py-2 text-light-dark hover:text-primary">项目</a>
+                <a href="#experience" class="py-2 text-light-dark hover:text-primary">经历</a>
+                <a href="#contact" class="py-2 text-light-dark hover:text-primary">联系</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="flex-grow">
+        <!-- 首页/欢迎区 -->
+        <section id="home" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <div class="absolute inset-0 bg-gradient-to-br from-dark to-dark-light opacity-90"></div>
+                <div class="absolute top-0 left-0 w-full h-full" id="code-background"></div>
+            </div>
+            <div class="container mx-auto z-10">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0">
+                        <div class="text-center md:text-left">
+                            <h1 class="text-4xl md:text-6xl font-bold mb-4">
+                                <span class="text-white">你好，我是</span>
+                                <span class="text-primary text-shadow">丁鸿磁</span>
+                            </h1>
+                            <p class="text-xl md:text-2xl mb-6 text-light-dark">
+                                <span class="typing-effect" id="typing-text">全栈软件开发工程师 | AI 产品创新者</span>
+                            </p>
+                            <div class="code-block p-4 rounded-md mb-6">
+                                <pre class="text-sm md:text-base text-primary"><span class="text-light-dark">// 关于我</span>
+const profile = {
+  title: <span class="text-secondary">"全栈软件开发工程师"</span>,
+  focus: <span class="text-secondary">"AI 大模型应用开发"</span>,
+  location: <span class="text-secondary">"中国 · 上海/ 南京 / 温哥华"</span>,
+  motto: <span class="text-secondary">"技术 x 人文，打造有温度的智能体验"</span>
+};
+                                </pre>
+                            </div>
+                            <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                                <a href="#projects" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300 flex items-center">
+                                    <i class="fa fa-folder-open mr-2"></i> 查看项目
+                                </a>
+                                <a href="#contact" class="border border-primary text-primary hover:bg-primary hover:bg-opacity-10 font-bold py-2 px-6 rounded-md transition duration-300 flex items-center">
+                                    <i class="fa fa-envelope mr-2"></i> 联系我
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <div class="relative">
+                            <div class="absolute inset-0 bg-primary blur-lg opacity-20 transform -translate-x-4 translate-y-4 rounded-xl" style="width: 192px; height: 256px;"></div>
+                            <img id="hero-avatar" src="./img/head.jpg" alt="程序员头像" class="object-cover border-4 border-primary border-glow relative z-10 rounded-xl" style="width: 192px; height: 256px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于我 -->
+        <section id="about" class="py-16 bg-dark-light">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-2 text-primary">
+                        <i class="fa fa-user-circle mr-2"></i>关于我
+                    </h2>
+                    <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                </div>
+                <div class="max-w-3xl mx-auto">
+                    <div class="code-block p-6 rounded-md">
+                                                <pre class="text-light"><span class="text-light-dark">/**
+ * @description 个人简介
+ * @author 丁鸿磁
+ * @version 2025.10
+ */</span>
+
+const aboutMe = {
+    name: <span class="text-secondary">"丁鸿磁"</span>,
+    title: <span class="text-secondary">"全栈软件开发工程师"</span>,
+    focus: <span class="text-secondary">"AI 大模型应用开发"</span>,
+    location: <span class="text-secondary">"中国 · 上海  · 南京/ 加拿大 · 温哥华"</span>,
+    email: <span class="text-secondary">"20067227@qq.com"</span>,
+    phone: <span class="text-secondary">"+86 137 0551 1125"</span>,
+        links: [
+            <span class="text-secondary">"LinkedIn: https://www.linkedin.com/in/hongci-ding-2392471a5/"</span>,
+            <span class="text-secondary">"GitHub: https://github.com/KonoNeko"</span>
+        ],
+    traits: [
+        <span class="text-secondary">"ENFP-A 团队激励型"</span>,
+        <span class="text-secondary">"专业滑雪教练"</span>,
+        <span class="text-secondary">"热衷咖啡 / 烹饪 / 摄影"</span>
+    ]
+};
+
+<span class="text-light-dark">// 专业总结</span>
+function professionalSummary() {
+    return [
+        <span class="text-secondary">"擅长将 AI 能力注入物流调度、智能客服与安全检测产品。"</span>,
+        <span class="text-secondary">"兼具创造与执行力，注重用户体验与跨团队协作。"</span>,
+        <span class="text-secondary">"倡导技术与人文融合，打造有温度的智能应用。"</span>
+    ].join(' ');
+}
+                        </pre>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <a href="#contact" class="inline-flex items-center text-primary hover:text-secondary transition duration-300">
+                            <span>了解更多关于我</span>
+                            <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 技能 -->
+        <section id="skills" class="py-16 bg-dark">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-2 text-primary">
+                        <i class="fa fa-code mr-2"></i>我的技能
+                    </h2>
+                    <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- 技能雷达图 -->
+                    <div class="bg-dark-light p-6 rounded-md">
+                        <h3 class="text-xl font-bold mb-4 text-center text-secondary">技能雷达图</h3>
+                        <div class="w-full h-80">
+                            <canvas id="skillsRadarChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- 技能列表 -->
+                    <div class="bg-dark-light p-6 rounded-md">
+                        <h3 class="text-xl font-bold mb-4 text-center text-secondary">技能熟练度</h3>
+                        <div class="space-y-6" id="skills-list">
+                            <!-- 技能条将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+                <!-- 标签云 -->
+                <div class="mt-12 bg-dark-light p-6 rounded-md">
+                    <h3 class="text-xl font-bold mb-4 text-center text-secondary">技术标签</h3>
+                    <div class="flex flex-wrap justify-center gap-3" id="tags-cloud">
+                        <!-- 标签将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 项目 -->
+        <section id="projects" class="py-16 bg-dark-light">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-2 text-primary">
+                        <i class="fa fa-folder-open mr-2"></i>我的项目
+                    </h2>
+                    <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                </div>
+                <!-- 项目筛选 -->
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <button class="project-filter-btn active bg-primary text-dark px-4 py-2 rounded-md" data-filter="all">全部</button>
+                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="frontend">前端</button>
+                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="backend">后端</button>
+                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="fullstack">全栈</button>
+                </div>
+                <!-- 项目列表 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-list">
+                    <!-- 项目卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 经历 -->
+        <section id="experience" class="py-16 bg-dark">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-2 text-primary">
+                        <i class="fa fa-history mr-2"></i>我的经历
+                    </h2>
+                    <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                </div>
+                <div class="max-w-3xl mx-auto">
+                    <!-- 时间线 -->
+                    <div class="relative">
+                        <!-- 时间线轴 -->
+                        <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary"></div>
+                        
+                        <!-- 经历列表 -->
+                        <div class="space-y-12" id="experience-timeline">
+                            <!-- 经历将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系 -->
+        <section id="contact" class="py-16 bg-dark-light">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-2 text-primary">
+                        <i class="fa fa-envelope mr-2"></i>联系我
+                    </h2>
+                    <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <!-- 联系信息 -->
+                    <div class="bg-dark p-6 rounded-md">
+                        <h3 class="text-xl font-bold mb-6 text-secondary">联系信息</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-dark-lighter rounded-full flex items-center justify-center mr-4">
+                                    <i class="fa fa-envelope text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-light-dark">邮箱</p>
+                                    <p class="text-light"><a href="mailto:20067227@qq.com" class="hover:text-primary" id="contact-email">20067227@qq.com</a></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-dark-lighter rounded-full flex items-center justify-center mr-4">
+                                    <i class="fa fa-phone text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-light-dark">电话</p>
+                                    <p class="text-light"><a href="tel:+8613705511125" class="hover:text-primary" id="contact-phone">+86 137 0551 1125</a></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-dark-lighter rounded-full flex items-center justify-center mr-4">
+                                    <i class="fa fa-map-marker text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-light-dark">工作地点</p>
+                                    <p class="text-light" id="contact-location">中国 · 上海 / 加拿大 · 温哥华</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-dark-lighter rounded-full flex items-center justify-center mr-4">
+                                    <i class="fa fa-id-card text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-light-dark">个人标签</p>
+                                    <p class="text-light" id="contact-bio-summary">30 岁 · ENFP-A · 热爱 AI &amp; 户外运动</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 社交媒体 -->
+                        <div class="mt-8">
+                            <h4 class="text-lg font-bold mb-4 text-secondary">社交媒体</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-10 h-10 bg-dark-lighter rounded-full flex items-center justify-center hover:bg-primary hover:text-dark transition duration-300" aria-label="GitHub" data-social="github">
+                                    <i class="fa fa-github text-xl"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-dark-lighter rounded-full flex items-center justify-center hover:bg-primary hover:text-dark transition duration-300" aria-label="LinkedIn" data-social="linkedin">
+                                    <i class="fa fa-linkedin text-xl"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-dark-lighter rounded-full flex items-center justify-center hover:bg-primary hover:text-dark transition duration-300" aria-label="个人博客" data-social="website">
+                                    <i class="fa fa-globe text-xl"></i>
+                                </a>
+                            </div>
+                            <p class="text-light-dark text-sm mt-4 leading-6" id="contact-tagline">
+                                注重用户体验与系统优化，善于将 AI 能力落地为可持续的业务方案；相信技术与人文的融合能让产品更有温度。
+                            </p>
+                        </div>
+                    </div>
+                    <!-- 联系表单 -->
+                    <div class="bg-dark p-6 rounded-md">
+                        <h3 class="text-xl font-bold mb-6 text-secondary">发送消息</h3>
+                        <form id="contact-form">
+                            <div class="mb-4">
+                                <label for="name" class="block text-light-dark mb-2">姓名</label>
+                                <input type="text" id="name" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-light-dark mb-2">邮箱</label>
+                                <input type="email" id="email" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div class="mb-4">
+                                <label for="subject" class="block text-light-dark mb-2">主题</label>
+                                <input type="text" id="subject" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div class="mb-6">
+                                <label for="message" class="block text-light-dark mb-2">消息</label>
+                                <textarea id="message" rows="5" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
+                                发送消息
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark-light border-t border-dark-lighter py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa fa-code text-primary text-2xl"></i>
+                        <span class="text-xl font-bold text-primary">Hongci.dev</span>
+                    </div>
+                    <p class="text-light-dark mt-2">© 2025 版权所有</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#home" class="text-light-dark hover:text-primary transition duration-300">首页</a>
+                    <a href="#about" class="text-light-dark hover:text-primary transition duration-300">关于我</a>
+                    <a href="#projects" class="text-light-dark hover:text-primary transition duration-300">项目</a>
+                    <a href="#contact" class="text-light-dark hover:text-primary transition duration-300">联系</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 密码验证模态框 -->
+    <div id="password-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+        <div class="bg-dark-light rounded-lg w-full max-w-md">
+            <div class="p-6 border-b border-dark-lighter">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-primary">
+                        <i class="fa fa-lock mr-2"></i>管理员验证
+                    </h3>
+                    <button id="close-password-modal" class="text-light-dark hover:text-primary">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <form id="password-form">
+                    <div class="mb-4">
+                        <label for="admin-password" class="block text-light-dark mb-2">管理员密码</label>
+                        <input type="password" id="admin-password" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" placeholder="请输入管理员密码" required>
+                        <div id="password-error" class="text-red-500 text-sm mt-2 hidden">密码错误，请重试</div>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button type="button" id="cancel-password" class="bg-dark-lighter text-light font-bold py-2 px-6 rounded-md transition duration-300 mr-3">
+                            取消
+                        </button>
+                        <button type="submit" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
+                            <i class="fa fa-sign-in mr-2"></i>登录
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 后台管理模态框 -->
+    <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+        <div class="bg-dark-light rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-dark-lighter">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-primary">
+                        <i class="fa fa-cog mr-2"></i>后台管理
+                    </h3>
+                    <button id="close-admin-modal" class="text-light-dark hover:text-primary">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <!-- 管理标签页 -->
+                <div class="mb-6 border-b border-dark-lighter">
+                    <ul class="flex flex-wrap -mb-px">
+                        <li class="mr-2">
+                            <a href="#" class="admin-tab active inline-block p-4 border-b-2 border-primary text-primary" data-tab="profile">个人信息</a>
+                        </li>
+                        <li class="mr-2">
+                            <a href="#" class="admin-tab inline-block p-4 border-b-2 border-transparent text-light-dark hover:text-primary hover:border-primary" data-tab="projects">项目管理</a>
+                        </li>
+                        <li class="mr-2">
+                            <a href="#" class="admin-tab inline-block p-4 border-b-2 border-transparent text-light-dark hover:text-primary hover:border-primary" data-tab="experience">经历管理</a>
+                        </li>
+                        <li class="mr-2">
+                            <a href="#" class="admin-tab inline-block p-4 border-b-2 border-transparent text-light-dark hover:text-primary hover:border-primary" data-tab="skills">技能管理</a>
+                        </li>
+                        <li class="mr-2">
+                            <a href="#" class="admin-tab inline-block p-4 border-b-2 border-transparent text-light-dark hover:text-primary hover:border-primary" data-tab="tags">标签管理</a>
+                        </li>
+                        <li class="mr-2">
+                            <a href="#" class="admin-tab inline-block p-4 border-b-2 border-transparent text-light-dark hover:text-primary hover:border-primary" data-tab="system">系统设置</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 个人信息管理 -->
+                <div id="profile-tab" class="admin-tab-content">
+                    <form id="profile-form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="admin-name" class="block text-light-dark mb-2">姓名</label>
+                                <input type="text" id="admin-name" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label for="admin-title" class="block text-light-dark mb-2">职业</label>
+                                <input type="text" id="admin-title" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label for="admin-location" class="block text-light-dark mb-2">地址</label>
+                                <input type="text" id="admin-location" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label for="admin-email" class="block text-light-dark mb-2">邮箱</label>
+                                <input type="email" id="admin-email" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label for="admin-github" class="block text-light-dark mb-2">GitHub</label>
+                                <input type="text" id="admin-github" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label for="admin-bio" class="block text-light-dark mb-2">个人简介</label>
+                                <textarea id="admin-bio" rows="4" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary"></textarea>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
+                                保存信息
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 项目管理 -->
+                <div id="projects-tab" class="admin-tab-content hidden">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h4 class="text-xl font-bold text-secondary">项目列表</h4>
+                        <button id="add-project-btn" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-4 rounded-md transition duration-300 flex items-center">
+                            <i class="fa fa-plus mr-2"></i> 添加项目
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4" id="admin-projects-list">
+                        <!-- 项目列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 经历管理 -->
+                <div id="experience-tab" class="admin-tab-content hidden">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h4 class="text-xl font-bold text-secondary">经历列表</h4>
+                        <button id="add-experience-btn" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-4 rounded-md transition duration-300 flex items-center">
+                            <i class="fa fa-plus mr-2"></i> 添加经历
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4" id="admin-experience-list">
+                        <!-- 经历列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 技能管理 -->
+                <div id="skills-tab" class="admin-tab-content hidden">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h4 class="text-xl font-bold text-secondary">技能列表</h4>
+                        <button id="add-skill-btn" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-4 rounded-md transition duration-300 flex items-center">
+                            <i class="fa fa-plus mr-2"></i> 添加技能
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4" id="admin-skills-list">
+                        <!-- 技能列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 标签管理 -->
+                <div id="tags-tab" class="admin-tab-content hidden">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h4 class="text-xl font-bold text-secondary">标签列表</h4>
+                        <button id="add-tag-btn" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-4 rounded-md transition duration-300 flex items-center">
+                            <i class="fa fa-plus mr-2"></i> 添加标签
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3" id="admin-tags-list">
+                        <!-- 标签列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 系统设置 -->
+                <div id="system-tab" class="admin-tab-content hidden">
+                    <div class="space-y-6">
+                        <div class="bg-dark p-6 rounded-md">
+                            <h4 class="text-xl font-bold text-secondary mb-4">
+                                <i class="fa fa-database mr-2"></i>数据管理
+                            </h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <button id="export-data-btn" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-4 rounded-md transition duration-300 flex items-center mr-4">
+                                        <i class="fa fa-download mr-2"></i> 导出数据
+                                    </button>
+                                </div>
+                                <div>
+                                    <input type="file" id="import-data-input" accept=".json" class="hidden">
+                                    <button onclick="document.getElementById('import-data-input').click()" class="bg-secondary hover:bg-opacity-80 text-dark font-bold py-2 px-4 rounded-md transition duration-300 flex items-center mr-4">
+                                        <i class="fa fa-upload mr-2"></i> 导入数据
+                                    </button>
+                                </div>
+                                <div class="border-t border-dark-lighter pt-4">
+                                    <button id="reset-data-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 flex items-center">
+                                        <i class="fa fa-refresh mr-2"></i> 重置所有数据
+                                    </button>
+                                    <p class="text-light-dark text-sm mt-2">⚠️ 此操作将清除所有自定义数据，恢复到初始状态</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-dark p-6 rounded-md">
+                            <h4 class="text-xl font-bold text-secondary mb-4">
+                                <i class="fa fa-info-circle mr-2"></i>系统信息
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <p class="text-light-dark">版本: <span class="text-light">2025.10.16</span></p>
+                                <p class="text-light-dark">最后更新: <span class="text-light" id="last-update-time">-</span></p>
+                                <p class="text-light-dark">数据状态: <span class="text-primary" id="data-status">已同步</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加项目模态框 -->
+    <div id="add-project-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+        <div class="bg-dark-light rounded-lg w-full max-w-2xl">
+            <div class="p-6 border-b border-dark-lighter">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-primary">
+                        <i class="fa fa-plus mr-2"></i>添加项目
+                    </h3>
+                    <button class="close-modal text-light-dark hover:text-primary">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <form id="add-project-form">
+                    <div class="mb-4">
+                        <label for="project-title" class="block text-light-dark mb-2">项目标题</label>
+                        <input type="text" id="project-title" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required="">
+                    </div>
+                    <div class="mb-4">
+                        <label for="project-description" class="block text-light-dark mb-2">项目描述</label>
+                        <textarea id="project-description" rows="4" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required=""></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="project-category" class="block text-light-dark mb-2">项目分类</label>
+                        <select id="project-category" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required="">
+                            <option value="frontend">前端</option>
+                            <option value="backend">后端</option>
+                            <option value="fullstack">全栈</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="project-tech" class="block text-light-dark mb-2">技术栈</label>
+                        <input type="text" id="project-tech" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" placeholder="用逗号分隔多个技术" required="">
+                    </div>
+                    <div class="mb-4">
+                        <label for="project-image" class="block text-light-dark mb-2">项目图片URL</label>
+                        <input type="text" id="project-image" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                    </div>
+                    <div class="mb-4">
+                        <label for="project-github" class="block text-light-dark mb-2">GitHub链接</label>
+                        <input type="text" id="project-github" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button type="button" class="close-modal bg-dark-lighter text-light font-bold py-2 px-6 rounded-md transition duration-300 mr-3">
+                            取消
+                        </button>
+                        <button type="submit" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
+                            添加项目
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加经历模态框 -->
+    <div id="add-experience-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+        <div class="bg-dark-light rounded-lg w-full max-w-2xl">
+            <div class="p-6 border-b border-dark-lighter">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-primary">
+                        <i class="fa fa-plus mr-2"></i>添加经历
+                    </h3>
+                    <button class="close-modal text-light-dark hover:text-primary">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <form id="add-experience-form">
+                    <div class="mb-4">
+                        <label for="experience-title" class="block text-light-dark mb-2">职位</label>
+                        <input type="text" id="experience-title" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required="">
+                    </div>
+                    <div class="mb-4">
+                        <label for="experience-company" class="block text-light-dark mb-2">公司/机构</label>
+                        <input type="text" id="experience-company" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required="">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="experience-start" class="block text-light-dark mb-2">开始日期</label>
+                            <input type="month" id="experience-start" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required="">
+                        </div>
+                        <div>
+                            <label for="experience-end" class="block text-light-dark mb-2">结束日期</label>
+                            <input type="month" id="experience-end" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="experience-description" class="block text-light-dark mb-2">工作描述</label>
+                        <textarea id="experience-description" rows="4" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required=""></textarea>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button type="button" class="close-modal bg-dark-lighter text-light font-bold py-2 px-6 rounded-md transition duration-300 mr-3">
+                            取消
+                        </button>
+                        <button type="submit" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
+                            添加经历
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加技能模态框 -->
+    <div id="add-skill-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+        <div class="bg-dark-light rounded-lg w-full max-w-md">
+            <div class="p-6 border-b border-dark-lighter">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-primary">
+                        <i class="fa fa-plus mr-2"></i>添加技能
+                    </h3>
+                    <button class="close-modal text-light-dark hover:text-primary">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <form id="add-skill-form">
+                    <div class="mb-4">
+                        <label for="skill-name" class="block text-light-dark mb-2">技能名称</label>
+                        <input type="text" id="skill-name" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required="">
+                    </div>
+                    <div class="mb-4">
+                        <label for="skill-level" class="block text-light-dark mb-2">熟练度 (0-100)</label>
+                        <input type="range" id="skill-level" min="0" max="100" value="50" class="w-full h-2 bg-dark rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs text-light-dark mt-1">
+                            <span>0%</span>
+                            <span id="skill-level-value">50%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button type="button" class="close-modal bg-dark-lighter text-light font-bold py-2 px-6 rounded-md transition duration-300 mr-3">
+                            取消
+                        </button>
+                        <button type="submit" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
+                            添加技能
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加标签模态框 -->
+    <div id="add-tag-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+        <div class="bg-dark-light rounded-lg w-full max-w-md">
+            <div class="p-6 border-b border-dark-lighter">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-primary">
+                        <i class="fa fa-plus mr-2"></i>添加标签
+                    </h3>
+                    <button class="close-modal text-light-dark hover:text-primary">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <form id="add-tag-form">
+                    <div class="mb-4">
+                        <label for="tag-name" class="block text-light-dark mb-2">标签名称</label>
+                        <input type="text" id="tag-name" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required="">
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button type="button" class="close-modal bg-dark-lighter text-light font-bold py-2 px-6 rounded-md transition duration-300 mr-3">
+                            取消
+                        </button>
+                        <button type="submit" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
+                            添加标签
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 数据存储
+        const portfolioData = {
+            profile: {
+                name: "丁鸿磁",
+                title: "全栈软件开发工程师",
+                focus: "AI 大模型应用开发 · 系统架构",
+                location: "中国 · 上海 / 加拿大 · 温哥华",
+                email: "20067227@qq.com",
+                phone: "+86 137 0551 1125",
+                github: "https://github.com/dinghongci",
+                linkedin: "https://www.linkedin.com/in/dinghongci",
+                website: "#",
+                avatar: "./img/head.jpg",
+                age: 30,
+                bio: "注重用户体验与系统优化，善于将 AI 能力落地为可持续的业务方案。",
+                traits: [
+                    "ENFP-A 团队激励型",
+                    "专业滑雪教练",
+                    "热衷咖啡 / 烹饪 / 摄影"
+                ]
+            },
+            skills: [
+                { name: "多语言编程 (PHP / Python / Java / JS)", level: 92 },
+                { name: "React.js & 数据可视化", level: 90 },
+                { name: "Laravel · FastAPI 全栈架构", level: 88 },
+                { name: "PyTorch · 大模型微调", level: 85 },
+                { name: "AWS & 云原生运维", level: 82 },
+                { name: "产品设计 & 敏捷协作", level: 80 }
+            ],
+            tags: [
+                "PHP", "Python", "Java", "JavaScript", "Ruby", "C/C++",
+                "React", "FastAPI", "Laravel", "PyTorch", "ChatGPT API", "DistilBERT",
+                "MongoDB", "MySQL", "Redis", "AWS", "DeepSeek", "LoRA", "Gradio", "Material UI", "Git", "Visual Studio", "PhpStorm", "PyCharm", "IntelliJ IDEA", "Android Studio", "Miro", "Jira", "Trello", "Agile", "Figma"
+            ],
+            projects: [
+                {
+                    id: 1,
+                    title: "喵卜灵 · AI 自我探索占卜平台",
+                    description: "融合塔罗牌与现代哲学的自我探索平台，基于 DeepSeek 大模型进行语料 fine-tuning，提供在线抽牌、语义检索与个性化解读。",
+                    category: "backend",
+                    tech: ["React", "Tailwind CSS", "FastAPI", "PyTorch", "DeepSeek", "MongoDB"],
+                    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+                    github: "#"
+                },
+                {
+                    id: 2,
+                    title: "猫探 · AI 智能安全检测平台",
+                    description: "集成 URL/文本钓鱼检测、邮箱筛查与 Deepfake 视频分析的安全检测平台，结合 DistilBERT + LoRA 微调与自研特征提取，支持跨渠道威胁识别。",
+                    category: "fullstack",
+                    tech: ["Python", "FastAPI", "PyTorch", "Machine Learning", "DistilBERT", "LoRA", "Redis"],
+                    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+                    github: "#"
+                },
+                {
+                    id: 3,
+                    title: "UniUni 物流调度中心",
+                    description: "服务北美物流网络的调度与质量管理系统，涵盖订单整合、追踪继承与 AI 客服集成。",
+                    category: "fullstack",
+                    tech: ["Laravel", "React", "AWS", "Redis", "Twilio", "ChatGPT API"],
+                    image: "https://images.unsplash.com/photo-1527430253228-e93688616381?auto=format&fit=crop&w=1200&q=80",
+                    github: "#"
+                }
+            ],
+            experience: [
+                {
+                    id: 1,
+                    title: "全栈软件开发工程师",
+                    company: "UNIUNI INC · 物流调度中心",
+                    startDate: "2022-03",
+                    endDate: "2024-08",
+                    description: "与首席开发工程师协作设计工资与事件管理数据库，独立主导调度中心全栈开发；实现订单交换、标签数据管理、第三方转运与追踪继承流程；构建配送质量管理、照片识别校验与短信通知模块；接入 ChatGPT API 与 PyTorch 推理打造智能客服，整体运营效率提升约 15%，内部满意度达 95%。"
+                },
+                {
+                    id: 2,
+                    title: "初级软件开发工程师",
+                    company: "Envisio Solution · 绩效管理软件",
+                    startDate: "2021-06",
+                    endDate: "2022-02",
+                    description: "重构用户引导与仪表盘体验，使用 React.js + D3.js 构建交互式数据可视化；设计并实现 RESTful API，整合多源数据并生成自动化绩效报告；上线后 90% 新用户反馈操作流畅，大幅提升公共部门客户的数据洞察效率。"
+                },
+                {
+                    id: 3,
+                    title: "应用计算机科学学士 · 网络安全应用开发方向",
+                    company: "不列颠哥伦比亚理工学院（BCIT）",
+                    startDate: "2024-09",
+                    endDate: "2026-05",
+                    description: "专注于云安全、网络攻防与 AI 时代的安全开发实践，系统学习大型应用的安全架构与自动化测试。"
+                },
+                {
+                    id: 4,
+                    title: "计算机系统技术副学士 · 技术创业方向",
+                    company: "不列颠哥伦比亚理工学院（BCIT）",
+                    startDate: "2018-09",
+                    endDate: "2021-05",
+                    description: "覆盖软件工程、数据库、嵌入式与产品化流程课程，完成多项跨学科创新项目，培养技术创业思维。"
+                }
+            ]
+        };
+
+        // 数据持久化功能
+        function saveDataToStorage() {
+            try {
+                localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+                console.log('数据已保存到本地存储');
+            } catch (error) {
+                console.error('保存数据失败:', error);
+            }
+        }
+
+        function loadDataFromStorage() {
+            try {
+                const savedData = localStorage.getItem('portfolioData');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    // 合并保存的数据到portfolioData
+                    Object.assign(portfolioData, parsedData);
+                    console.log('数据已从本地存储加载');
+                    return true;
+                }
+            } catch (error) {
+                console.error('加载数据失败:', error);
+            }
+            return false;
+        }
+
+        // 在页面加载时恢复数据
+        loadDataFromStorage();
+
+        // DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化页面
+            initPage();
+            
+            // 初始化事件监听
+            initEventListeners();
+            
+            // 初始化后台管理
+            initAdminPanel();
+            
+            // 初始化鼠标跟随效果
+            initMouseFollower();
+        });
+
+        // 初始化页面
+        function initPage() {
+            // 渲染技能
+            renderSkills();
+            
+            // 渲染标签云
+            renderTagsCloud();
+            
+            // 渲染项目
+            renderProjects();
+            
+            // 渲染经历
+            renderExperience();
+
+            // 渲染头像
+            renderProfileAvatar();
+
+            // 渲染联系信息
+            renderContactInfo();
+            
+            // 初始化技能雷达图
+            initSkillsRadarChart();
+            
+            // 初始化代码背景
+            initCodeBackground();
+            
+            // 初始化打字机效果
+            initTypingEffect();
+        }
+
+        // 初始化事件监听
+        function initEventListeners() {
+            // 移动端菜单切换
+            document.getElementById('mobile-menu-button').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 导航链接点击
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // 移除所有链接的active类
+                    document.querySelectorAll('.nav-link').forEach(item => {
+                        item.classList.remove('active', 'text-primary');
+                        item.classList.add('text-light-dark');
+                    });
+                    
+                    // 添加当前链接的active类
+                    this.classList.add('active', 'text-primary');
+                    this.classList.remove('text-light-dark');
+                    
+                    // 如果是移动端，点击后关闭菜单
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // 项目筛选按钮点击
+            document.querySelectorAll('.project-filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    document.querySelectorAll('.project-filter-btn').forEach(item => {
+                        item.classList.remove('active', 'bg-primary', 'text-dark');
+                        item.classList.add('bg-dark-lighter', 'text-light');
+                    });
+                    
+                    // 添加当前按钮的active类
+                    this.classList.add('active', 'bg-primary', 'text-dark');
+                    this.classList.remove('bg-dark-lighter', 'text-light');
+                    
+                    // 筛选项目
+                    const filter = this.getAttribute('data-filter');
+                    filterProjects(filter);
+                });
+            });
+            
+            // 联系表单提交
+            document.getElementById('contact-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 获取表单数据
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                // 简单验证
+                if (!name || !email || !subject || !message) {
+                    alert('请填写所有字段');
+                    return;
+                }
+                
+                // 模拟表单提交
+                alert('消息已发送！我们会尽快回复您。');
+                this.reset();
+            });
+            
+            // 后台管理切换
+            document.getElementById('admin-toggle').addEventListener('click', function() {
+                document.getElementById('password-modal').classList.remove('hidden');
+            });
+            
+            // 密码验证
+            const correctPasswordHash = "7f8c9d2a1b5e6f3c4d8a9e2b1c5f6a3d"; // MD5 hash of "asdzxc~123"
+            
+            function simpleHash(str) {
+                let hash = 0;
+                if (str.length === 0) return hash.toString(16);
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash).toString(16);
+            }
+            
+            document.getElementById('password-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const password = document.getElementById('admin-password').value;
+                const hashedPassword = simpleHash(password + "salt2024");
+                
+                if (password === "asdzxc~123") {
+                    document.getElementById('password-modal').classList.add('hidden');
+                    document.getElementById('admin-modal').classList.remove('hidden');
+                    document.getElementById('admin-password').value = '';
+                    document.getElementById('password-error').classList.add('hidden');
+                } else {
+                    document.getElementById('password-error').classList.remove('hidden');
+                    document.getElementById('admin-password').value = '';
+                }
+            });
+            
+            // 关闭密码模态框
+            document.getElementById('close-password-modal').addEventListener('click', function() {
+                document.getElementById('password-modal').classList.add('hidden');
+                document.getElementById('admin-password').value = '';
+                document.getElementById('password-error').classList.add('hidden');
+            });
+            
+            document.getElementById('cancel-password').addEventListener('click', function() {
+                document.getElementById('password-modal').classList.add('hidden');
+                document.getElementById('admin-password').value = '';
+                document.getElementById('password-error').classList.add('hidden');
+            });
+            
+            // 关闭后台管理模态框
+            document.getElementById('close-admin-modal').addEventListener('click', function() {
+                document.getElementById('admin-modal').classList.add('hidden');
+            });
+            
+            // 关闭所有模态框
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.fixed.inset-0.bg-black.bg-opacity-70').forEach(modal => {
+                        modal.classList.add('hidden');
+                    });
+                });
+            });
+            
+            // 技能水平滑块
+            const skillLevelSlider = document.getElementById('skill-level');
+            const skillLevelValue = document.getElementById('skill-level-value');
+            if (skillLevelSlider && skillLevelValue) {
+                skillLevelSlider.addEventListener('input', function() {
+                    skillLevelValue.textContent = this.value + '%';
+                });
+            }
+        }
+
+        // 初始化后台管理
+        function initAdminPanel() {
+            // 管理标签页切换
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 移除所有标签页的active类
+                    document.querySelectorAll('.admin-tab').forEach(item => {
+                        item.classList.remove('active', 'border-primary', 'text-primary');
+                        item.classList.add('border-transparent', 'text-light-dark');
+                    });
+                    
+                    // 添加当前标签页的active类
+                    this.classList.add('active', 'border-primary', 'text-primary');
+                    this.classList.remove('border-transparent', 'text-light-dark');
+                    
+                    // 隐藏所有内容
+                    document.querySelectorAll('.admin-tab-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    // 显示当前内容
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-tab').classList.remove('hidden');
+                });
+            });
+            
+            // 填充个人信息表单
+            fillProfileForm();
+            
+            // 个人信息表单提交
+            document.getElementById('profile-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveProfile();
+            });
+            
+            // 渲染管理项目列表
+            renderAdminProjects();
+            
+            // 添加项目按钮点击
+            document.getElementById('add-project-btn').addEventListener('click', function() {
+                document.getElementById('add-project-modal').classList.remove('hidden');
+            });
+            
+            // 添加项目表单提交
+            document.getElementById('add-project-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addProject();
+            });
+            
+            // 渲染管理经历列表
+            renderAdminExperience();
+            
+            // 添加经历按钮点击
+            document.getElementById('add-experience-btn').addEventListener('click', function() {
+                document.getElementById('add-experience-modal').classList.remove('hidden');
+            });
+            
+            // 添加经历表单提交
+            document.getElementById('add-experience-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addExperience();
+            });
+            
+            // 渲染管理技能列表
+            renderAdminSkills();
+            
+            // 添加技能按钮点击
+            document.getElementById('add-skill-btn').addEventListener('click', function() {
+                document.getElementById('add-skill-modal').classList.remove('hidden');
+            });
+            
+            // 添加技能表单提交
+            document.getElementById('add-skill-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addSkill();
+            });
+            
+            // 渲染管理标签列表
+            renderAdminTags();
+            
+            // 添加标签按钮点击
+            document.getElementById('add-tag-btn').addEventListener('click', function() {
+                document.getElementById('add-tag-modal').classList.remove('hidden');
+            });
+            
+            // 添加标签表单提交
+            document.getElementById('add-tag-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addTag();
+            });
+        }
+
+        // 渲染技能
+        function renderSkills() {
+            const skillsList = document.getElementById('skills-list');
+            skillsList.innerHTML = '';
+            
+            portfolioData.skills.forEach(skill => {
+                const skillItem = document.createElement('div');
+                skillItem.innerHTML = `
+                    <div class="flex justify-between mb-1">
+                        <span class="text-light">${skill.name}</span>
+                        <span class="text-primary">${skill.level}%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 0%;" data-width="${skill.level}%"></div>
+                    </div>
+                `;
+                skillsList.appendChild(skillItem);
+            });
+            
+            // 延迟显示进度条动画
+            setTimeout(() => {
+                document.querySelectorAll('.skill-progress').forEach(progress => {
+                    progress.style.width = progress.getAttribute('data-width');
+                });
+            }, 300);
+        }
+
+        // 渲染标签云
+        function renderTagsCloud() {
+            const tagsCloud = document.getElementById('tags-cloud');
+            tagsCloud.innerHTML = '';
+            
+            portfolioData.tags.forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'bg-dark-lighter text-light px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-dark transition duration-300';
+                tagElement.textContent = tag;
+                tagsCloud.appendChild(tagElement);
+            });
+        }
+
+        // 渲染项目
+        function renderProjects(filter = 'all') {
+            const projectsList = document.getElementById('projects-list');
+            projectsList.innerHTML = '';
+            
+            const filteredProjects = filter === 'all' 
+                ? portfolioData.projects 
+                : portfolioData.projects.filter(project => project.category === filter);
+            
+            filteredProjects.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card bg-dark rounded-md overflow-hidden';
+                projectCard.innerHTML = `
+                    <div class="h-48 overflow-hidden">
+                        <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-secondary">${project.title}</h3>
+                            <span class="bg-dark-lighter text-light px-2 py-1 rounded text-xs">
+                                ${project.category === 'frontend' ? '前端' : project.category === 'backend' ? '后端' : '全栈'}
+                            </span>
+                        </div>
+                        <p class="text-light-dark mb-4">${project.description}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${project.tech.map(tech => `
+                                <span class="bg-dark-lighter text-light px-2 py-1 rounded text-xs">${tech}</span>
+                            `).join('')}
+                        </div>
+                        <div class="flex justify-between">
+                            <a href="${project.github}" target="_blank" class="text-primary hover:text-secondary transition duration-300 flex items-center">
+                                <i class="fa fa-github mr-1"></i> GitHub
+                            </a>
+                            <button class="view-project-btn text-primary hover:text-secondary transition duration-300 flex items-center" data-id="${project.id}">
+                                查看详情 <i class="fa fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                projectsList.appendChild(projectCard);
+            });
+            
+            // 添加项目详情按钮点击事件
+            document.querySelectorAll('.view-project-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const projectId = parseInt(this.getAttribute('data-id'));
+                    viewProjectDetails(projectId);
+                });
+            });
+        }
+
+        // 查看项目详情
+        function viewProjectDetails(projectId) {
+            const project = portfolioData.projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            alert(`项目详情: ${project.title}\n\n${project.description}\n\n技术栈: ${project.tech.join(', ')}`);
+        }
+
+        // 筛选项目
+        function filterProjects(filter) {
+            renderProjects(filter);
+        }
+
+        // 渲染经历
+        function renderExperience() {
+            const timeline = document.getElementById('experience-timeline');
+            timeline.innerHTML = '';
+            
+            const experiences = [...portfolioData.experience].sort((a, b) => {
+                const startA = new Date(a.startDate);
+                const startB = new Date(b.startDate);
+                return startB - startA;
+            });
+
+            experiences.forEach((exp, index) => {
+                const isLeft = index % 2 === 0;
+                const experienceItem = document.createElement('div');
+                experienceItem.className = `relative flex ${isLeft ? 'justify-end' : ''}`;
+                experienceItem.innerHTML = `
+                    <div class="w-5/12 ${isLeft ? 'text-right' : ''}">
+                        <div class="bg-dark-light p-6 rounded-md">
+                            <h3 class="text-xl font-bold text-secondary">${exp.title}</h3>
+                            <p class="text-primary mb-2">${exp.company}</p>
+                            <p class="text-light-dark mb-3">${formatDate(exp.startDate)} - ${exp.endDate ? formatDate(exp.endDate) : '至今'}</p>
+                            <p class="text-light">${exp.description}</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-primary rounded-full border-4 border-dark-light"></div>
+                `;
+                timeline.appendChild(experienceItem);
+            });
+        }
+
+        // 渲染头像
+        function renderProfileAvatar() {
+            const avatarEl = document.getElementById('hero-avatar');
+            if (!avatarEl) return;
+
+            const avatarSrc = portfolioData.profile && portfolioData.profile.avatar;
+            if (avatarSrc) {
+                avatarEl.src = avatarSrc;
+            }
+
+            if (portfolioData.profile && portfolioData.profile.name) {
+                avatarEl.alt = `${portfolioData.profile.name}头像`;
+            }
+        }
+
+        // 渲染联系信息
+        function renderContactInfo() {
+            const profile = portfolioData.profile;
+            const emailLink = document.getElementById('contact-email');
+            if (emailLink && profile.email) {
+                emailLink.textContent = profile.email;
+                emailLink.setAttribute('href', `mailto:${profile.email}`);
+            }
+
+            const phoneLink = document.getElementById('contact-phone');
+            if (phoneLink && profile.phone) {
+                const sanitizedPhone = profile.phone.replace(/\s+/g, '').replace(/-/g, '');
+                phoneLink.textContent = profile.phone;
+                phoneLink.setAttribute('href', `tel:${sanitizedPhone}`);
+            }
+
+            const locationEl = document.getElementById('contact-location');
+            if (locationEl && profile.location) {
+                locationEl.textContent = profile.location;
+            }
+
+            const bioSummary = document.getElementById('contact-bio-summary');
+            if (bioSummary) {
+                const parts = [];
+                if (profile.age) {
+                    parts.push(`${profile.age} 岁`);
+                }
+                if (profile.traits && profile.traits.length) {
+                    parts.push(profile.traits.join(' · '));
+                }
+                bioSummary.textContent = parts.filter(Boolean).join(' · ') || '热爱 AI 与户外运动';
+            }
+
+            const tagline = document.getElementById('contact-tagline');
+            if (tagline) {
+                tagline.textContent = profile.bio || '注重用户体验与系统优化，善于将 AI 能力落地为可持续的业务方案。';
+            }
+
+            const githubLink = document.querySelector('[data-social="github"]');
+            if (githubLink && profile.github) {
+                githubLink.setAttribute('href', profile.github);
+                if (profile.github !== '#') {
+                    githubLink.setAttribute('target', '_blank');
+                    githubLink.setAttribute('rel', 'noopener noreferrer');
+                }
+            }
+
+            const linkedinLink = document.querySelector('[data-social="linkedin"]');
+            if (linkedinLink && profile.linkedin) {
+                linkedinLink.setAttribute('href', profile.linkedin);
+                if (profile.linkedin !== '#') {
+                    linkedinLink.setAttribute('target', '_blank');
+                    linkedinLink.setAttribute('rel', 'noopener noreferrer');
+                }
+            }
+
+            const websiteLink = document.querySelector('[data-social="website"]');
+            if (websiteLink && profile.website) {
+                websiteLink.setAttribute('href', profile.website);
+                if (profile.website !== '#') {
+                    websiteLink.setAttribute('target', '_blank');
+                    websiteLink.setAttribute('rel', 'noopener noreferrer');
+                }
+            }
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return `${date.getFullYear()}年${date.getMonth() + 1}月`;
+        }
+
+        // 初始化技能雷达图
+        function initSkillsRadarChart() {
+            const ctx = document.getElementById('skillsRadarChart').getContext('2d');
+            
+            const skillNames = portfolioData.skills.map(skill => skill.name);
+            const skillLevels = portfolioData.skills.map(skill => skill.level);
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: skillNames,
+                    datasets: [{
+                        label: '技能熟练度',
+                        data: skillLevels,
+                        backgroundColor: 'rgba(0, 255, 170, 0.2)',
+                        borderColor: 'rgba(0, 255, 170, 1)',
+                        pointBackgroundColor: 'rgba(0, 255, 170, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(0, 255, 170, 1)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                display: false
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#e0e0e0'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // 初始化代码背景
+        function initCodeBackground() {
+            const codeBackground = document.getElementById('code-background');
+            const codeLines = [
+                'const engineer = "丁鸿磁";',
+                'const specialties = ["AI 大模型", "全栈开发", "系统架构"];',
+                '',
+                'function buildProduct(idea) {',
+                '  const stack = ["React", "Laravel", "FastAPI", "PyTorch", "AWS"];',
+                '  const team = ["敏捷协作", "用户体验", "可观测性"];',
+                '  return idea.combine(stack).infuse(team).deliver("有温度的智能体验");',
+                '}',
+                '',
+                'const hobbies = ["滑雪", "咖啡", "摄影", "烹饪"];',
+                'const personality = "ENFP-A";',
+                '',
+                'buildProduct("物流调度");',
+                'buildProduct("AI 安全检测");'
+            ];
+            
+            codeBackground.innerHTML = codeLines.map(line => `
+                <div class="flex items-center h-6 text-xs text-primary opacity-20">
+                    <span class="w-8 text-right mr-2 text-light-dark">${Math.floor(Math.random() * 100)}</span>
+                    <span>${line}</span>
+                </div>
+            `).join('');
+        }
+
+        // 初始化打字机效果
+        function initTypingEffect() {
+            const texts = [
+                "全栈软件开发工程师 | AI 产品创新者",
+                "大模型应用开发 | 智能客服集成",
+                "物流调度 & 安全检测系统架构师",
+                "技术 × 人文 · 打造有温度的体验"
+            ];
+            
+            let currentTextIndex = 0;
+            const typingText = document.getElementById('typing-text');
+            
+            function typeNextText() {
+                const currentText = texts[currentTextIndex];
+                let currentCharIndex = 0;
+                
+                typingText.textContent = '';
+                typingText.style.animation = 'none';
+                typingText.offsetHeight; // 触发重排
+                typingText.style.animation = 'typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite';
+                
+                const typeInterval = setInterval(() => {
+                    if (currentCharIndex < currentText.length) {
+                        typingText.textContent += currentText.charAt(currentCharIndex);
+                        currentCharIndex++;
+                    } else {
+                        clearInterval(typeInterval);
+                        setTimeout(() => {
+                            eraseText();
+                        }, 2000);
+                    }
+                }, 50);
+            }
+            
+            function eraseText() {
+                const currentText = typingText.textContent;
+                let currentCharIndex = currentText.length;
+                
+                typingText.style.animation = 'none';
+                typingText.offsetHeight; // 触发重排
+                typingText.style.animation = 'blink-caret 0.75s step-end infinite';
+                
+                const eraseInterval = setInterval(() => {
+                    if (currentCharIndex > 0) {
+                        typingText.textContent = currentText.substring(0, currentCharIndex - 1);
+                        currentCharIndex--;
+                    } else {
+                        clearInterval(eraseInterval);
+                        currentTextIndex = (currentTextIndex + 1) % texts.length;
+                        setTimeout(() => {
+                            typeNextText();
+                        }, 500);
+                    }
+                }, 30);
+            }
+            
+            typeNextText();
+        }
+
+        // 填充个人信息表单
+        function fillProfileForm() {
+            document.getElementById('admin-name').value = portfolioData.profile.name;
+            document.getElementById('admin-title').value = portfolioData.profile.title;
+            document.getElementById('admin-location').value = portfolioData.profile.location;
+            document.getElementById('admin-email').value = portfolioData.profile.email;
+            document.getElementById('admin-github').value = portfolioData.profile.github;
+            document.getElementById('admin-bio').value = portfolioData.profile.bio;
+        }
+
+        // 保存个人信息
+        function saveProfile() {
+            // 保存表单数据到portfolioData
+            portfolioData.profile.name = document.getElementById('admin-name').value;
+            portfolioData.profile.title = document.getElementById('admin-title').value;
+            portfolioData.profile.location = document.getElementById('admin-location').value;
+            portfolioData.profile.email = document.getElementById('admin-email').value;
+            portfolioData.profile.github = document.getElementById('admin-github').value;
+            portfolioData.profile.bio = document.getElementById('admin-bio').value;
+
+            // 实时更新主页标题
+            const mainTitle = document.querySelector('#home h1 .text-primary');
+            if (mainTitle) {
+                mainTitle.textContent = portfolioData.profile.name;
+            }
+            
+            // 更新主页副标题
+            const subtitle = document.querySelector('#home .text-light-dark');
+            if (subtitle) {
+                subtitle.innerHTML = `<span class="typing-effect" id="typing-text">${portfolioData.profile.title}</span>`;
+                // 重新初始化打字机效果
+                initTypingEffect();
+            }
+
+            const traitsMarkup = (portfolioData.profile.traits && portfolioData.profile.traits.length)
+                    ? portfolioData.profile.traits.map(trait => `<span class="text-secondary">"${trait}"</span>`).join(',\n    ')
+                    : `<span class="text-secondary">"持续学习"</span>`;
+            const summaryLines = [
+                    portfolioData.profile.bio || '注重用户体验与系统优化，善于将 AI 能力落地为可持续的业务方案。',
+                    '相信技术 × 人文的融合可以让产品更有温度。',
+                    '喜欢敏捷协作与跨界创新，持续探索 AI 在真实业务中的价值。'
+            ];
+            const summaryMarkup = summaryLines
+                    .filter(Boolean)
+                    .map(line => `<span class="text-secondary">"${line}"</span>`)
+                    .join(' +\n         ');
+            
+            // 更新关于我页面的个人信息
+            document.querySelector('#about .code-block pre').innerHTML = `
+<span class="text-light-dark">/**
+ * @description 个人简介
+ * @author ${portfolioData.profile.name}
+ * @version 2025.10
+ */</span>
+
+const aboutMe = {
+  name: <span class="text-secondary">"${portfolioData.profile.name}"</span>,
+  title: <span class="text-secondary">"${portfolioData.profile.title}"</span>,
+    focus: <span class="text-secondary">"${portfolioData.profile.focus || 'AI 大模型应用开发 · 系统架构'}"</span>,
+    location: <span class="text-secondary">"${portfolioData.profile.location}"</span>,
+    email: <span class="text-secondary">"${portfolioData.profile.email}"</span>,
+    phone: <span class="text-secondary">"${portfolioData.profile.phone || '待更新'}"</span>,
+    links: [
+        <span class="text-secondary">"LinkedIn: ${portfolioData.profile.linkedin || '待更新'}"</span>,
+        <span class="text-secondary">"GitHub: ${portfolioData.profile.github || '待更新'}"</span>
+    ],
+    traits: [
+        ${traitsMarkup}
+    ]
+};
+
+<span class="text-light-dark">// 专业总结</span>
+function professionalSummary() {
+    return ${summaryMarkup};
+}
+            `;
+
+                        renderContactInfo();
+                        renderProfileAvatar();
+            
+            alert('个人信息已保存！');
+            
+            // 保存到本地存储
+            saveDataToStorage();
+        }
+
+        // 渲染管理项目列表
+        function renderAdminProjects() {
+            const adminProjectsList = document.getElementById('admin-projects-list');
+            adminProjectsList.innerHTML = '';
+            
+            portfolioData.projects.forEach(project => {
+                const projectItem = document.createElement('div');
+                projectItem.className = 'bg-dark p-4 rounded-md';
+                projectItem.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-lg font-bold text-secondary">${project.title}</h4>
+                        <div>
+                            <button class="edit-project-btn text-primary hover:text-secondary mr-3" data-id="${project.id}">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button class="delete-project-btn text-red-500 hover:text-red-400" data-id="${project.id}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-light-dark mb-2">${project.description}</p>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        ${project.tech.map(tech => `
+                            <span class="bg-dark-lighter text-light px-2 py-1 rounded text-xs">${tech}</span>
+                        `).join('')}
+                    </div>
+                    <p class="text-xs text-light-dark">
+                        <span class="bg-dark-lighter text-light px-2 py-1 rounded text-xs">
+                            ${project.category === 'frontend' ? '前端' : project.category === 'backend' ? '后端' : '全栈'}
+                        </span>
+                    </p>
+                `;
+                adminProjectsList.appendChild(projectItem);
+            });
+            
+            // 添加编辑项目按钮点击事件
+            document.querySelectorAll('.edit-project-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const projectId = parseInt(this.getAttribute('data-id'));
+                    editProject(projectId);
+                });
+            });
+            
+            // 添加删除项目按钮点击事件
+            document.querySelectorAll('.delete-project-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const projectId = parseInt(this.getAttribute('data-id'));
+                    deleteProject(projectId);
+                });
+            });
+        }
+
+        // 编辑项目
+        function editProject(projectId) {
+            const project = portfolioData.projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            // 填充表单
+            document.getElementById('project-title').value = project.title;
+            document.getElementById('project-description').value = project.description;
+            document.getElementById('project-category').value = project.category;
+            document.getElementById('project-tech').value = project.tech.join(', ');
+            document.getElementById('project-image').value = project.image;
+            document.getElementById('project-github').value = project.github;
+            
+            // 更改表单提交处理
+            const form = document.getElementById('add-project-form');
+            const originalSubmitHandler = form.onsubmit;
+            
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                
+                // 更新项目
+                project.title = document.getElementById('project-title').value;
+                project.description = document.getElementById('project-description').value;
+                project.category = document.getElementById('project-category').value;
+                project.tech = document.getElementById('project-tech').value.split(',').map(t => t.trim());
+                project.image = document.getElementById('project-image').value;
+                project.github = document.getElementById('project-github').value;
+                
+                // 重新渲染项目列表
+                renderProjects();
+                renderAdminProjects();
+                
+                // 关闭模态框
+                document.getElementById('add-project-modal').classList.add('hidden');
+                
+                // 重置表单
+                form.reset();
+                
+                // 恢复原始提交处理
+                form.onsubmit = originalSubmitHandler;
+                
+                alert('项目已更新！');
+            };
+            
+            // 显示模态框
+            document.getElementById('add-project-modal').classList.remove('hidden');
+        }
+
+        // 删除项目
+        function deleteProject(projectId) {
+            if (confirm('确定要删除这个项目吗？')) {
+                portfolioData.projects = portfolioData.projects.filter(p => p.id !== projectId);
+                
+                // 重新渲染项目列表
+                renderProjects();
+                renderAdminProjects();
+                
+                // 保存到本地存储
+                saveDataToStorage();
+                
+                alert('项目已删除！');
+            }
+        }
+
+        // 添加项目
+        function addProject() {
+            const title = document.getElementById('project-title').value;
+            const description = document.getElementById('project-description').value;
+            const category = document.getElementById('project-category').value;
+            const tech = document.getElementById('project-tech').value.split(',').map(t => t.trim());
+            const image = document.getElementById('project-image').value;
+            const github = document.getElementById('project-github').value;
+            
+            const newProject = {
+                id: portfolioData.projects.length > 0 ? Math.max(...portfolioData.projects.map(p => p.id)) + 1 : 1,
+                title,
+                description,
+                category,
+                tech,
+                image: image || 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/d632b454b83e422989f824735dfbd71d~tplv-a9rns2rl98-image.image?rcl=202510140436165208BDF4BCC95B0EFC12&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1762979790&x-signature=3n3v2ZLHArM8NbjsFb5ifSG71b8%3D',
+                github: github || 'https://github.com'
+            };
+            
+            portfolioData.projects.push(newProject);
+            
+            // 重新渲染项目列表
+            renderProjects();
+            renderAdminProjects();
+            
+            // 关闭模态框
+            document.getElementById('add-project-modal').classList.add('hidden');
+            
+            // 重置表单
+            document.getElementById('add-project-form').reset();
+            
+            // 保存到本地存储
+            saveDataToStorage();
+            
+            alert('项目已添加！');
+        }
+
+        // 渲染管理经历列表
+        function renderAdminExperience() {
+            const adminExperienceList = document.getElementById('admin-experience-list');
+            adminExperienceList.innerHTML = '';
+            
+            portfolioData.experience.forEach(exp => {
+                const experienceItem = document.createElement('div');
+                experienceItem.className = 'bg-dark p-4 rounded-md';
+                experienceItem.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <h4 class="text-lg font-bold text-secondary">${exp.title}</h4>
+                            <p class="text-primary">${exp.company}</p>
+                        </div>
+                        <div>
+                            <button class="edit-experience-btn text-primary hover:text-secondary mr-3" data-id="${exp.id}">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button class="delete-experience-btn text-red-500 hover:text-red-400" data-id="${exp.id}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-light-dark mb-2">${formatDate(exp.startDate)} - ${exp.endDate ? formatDate(exp.endDate) : '至今'}</p>
+                    <p class="text-light">${exp.description}</p>
+                `;
+                adminExperienceList.appendChild(experienceItem);
+            });
+            
+            // 添加编辑经历按钮点击事件
+            document.querySelectorAll('.edit-experience-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const expId = parseInt(this.getAttribute('data-id'));
+                    editExperience(expId);
+                });
+            });
+            
+            // 添加删除经历按钮点击事件
+            document.querySelectorAll('.delete-experience-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const expId = parseInt(this.getAttribute('data-id'));
+                    deleteExperience(expId);
+                });
+            });
+        }
+
+        // 编辑经历
+        function editExperience(expId) {
+            const experience = portfolioData.experience.find(e => e.id === expId);
+            if (!experience) return;
+            
+            // 填充表单
+            document.getElementById('experience-title').value = experience.title;
+            document.getElementById('experience-company').value = experience.company;
+            document.getElementById('experience-start').value = experience.startDate;
+            document.getElementById('experience-end').value = experience.endDate || '';
+            document.getElementById('experience-description').value = experience.description;
+            
+            // 更改表单提交处理
+            const form = document.getElementById('add-experience-form');
+            const originalSubmitHandler = form.onsubmit;
+            
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                
+                // 更新经历
+                experience.title = document.getElementById('experience-title').value;
+                experience.company = document.getElementById('experience-company').value;
+                experience.startDate = document.getElementById('experience-start').value;
+                experience.endDate = document.getElementById('experience-end').value;
+                experience.description = document.getElementById('experience-description').value;
+                
+                // 重新渲染经历列表
+                renderExperience();
+                renderAdminExperience();
+                
+                // 关闭模态框
+                document.getElementById('add-experience-modal').classList.add('hidden');
+                
+                // 重置表单
+                form.reset();
+                
+                // 恢复原始提交处理
+                form.onsubmit = originalSubmitHandler;
+                
+                alert('经历已更新！');
+            };
+            
+            // 显示模态框
+            document.getElementById('add-experience-modal').classList.remove('hidden');
+        }
+
+        // 删除经历
+        function deleteExperience(expId) {
+            if (confirm('确定要删除这个经历吗？')) {
+                portfolioData.experience = portfolioData.experience.filter(e => e.id !== expId);
+                
+                // 重新渲染经历列表
+                renderExperience();
+                renderAdminExperience();
+                
+                alert('经历已删除！');
+            }
+        }
+
+        // 添加经历
+        function addExperience() {
+            const title = document.getElementById('experience-title').value;
+            const company = document.getElementById('experience-company').value;
+            const startDate = document.getElementById('experience-start').value;
+            const endDate = document.getElementById('experience-end').value;
+            const description = document.getElementById('experience-description').value;
+            
+            const newExperience = {
+                id: portfolioData.experience.length > 0 ? Math.max(...portfolioData.experience.map(e => e.id)) + 1 : 1,
+                title,
+                company,
+                startDate,
+                endDate,
+                description
+            };
+            
+            portfolioData.experience.push(newExperience);
+            
+            // 重新渲染经历列表
+            renderExperience();
+            renderAdminExperience();
+            
+            // 关闭模态框
+            document.getElementById('add-experience-modal').classList.add('hidden');
+            
+            // 重置表单
+            document.getElementById('add-experience-form').reset();
+            
+            alert('经历已添加！');
+        }
+
+        // 渲染管理技能列表
+        function renderAdminSkills() {
+            const adminSkillsList = document.getElementById('admin-skills-list');
+            adminSkillsList.innerHTML = '';
+            
+            portfolioData.skills.forEach(skill => {
+                const skillItem = document.createElement('div');
+                skillItem.className = 'bg-dark p-4 rounded-md';
+                skillItem.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <h4 class="text-lg font-bold text-secondary">${skill.name}</h4>
+                            <div class="flex items-center mt-2">
+                                <div class="w-32 skill-bar mr-2">
+                                    <div class="skill-progress" style="width: ${skill.level}%;"></div>
+                                </div>
+                                <span class="text-primary">${skill.level}%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="edit-skill-btn text-primary hover:text-secondary mr-3" data-id="${skill.name}">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button class="delete-skill-btn text-red-500 hover:text-red-400" data-id="${skill.name}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                adminSkillsList.appendChild(skillItem);
+            });
+            
+            // 添加编辑技能按钮点击事件
+            document.querySelectorAll('.edit-skill-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const skillName = this.getAttribute('data-id');
+                    editSkill(skillName);
+                });
+            });
+            
+            // 添加删除技能按钮点击事件
+            document.querySelectorAll('.delete-skill-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const skillName = this.getAttribute('data-id');
+                    deleteSkill(skillName);
+                });
+            });
+        }
+
+        // 编辑技能
+        function editSkill(skillName) {
+            const skill = portfolioData.skills.find(s => s.name === skillName);
+            if (!skill) return;
+            
+            // 填充表单
+            document.getElementById('skill-name').value = skill.name;
+            document.getElementById('skill-level').value = skill.level;
+            document.getElementById('skill-level-value').textContent = skill.level + '%';
+            
+            // 更改表单提交处理
+            const form = document.getElementById('add-skill-form');
+            const originalSubmitHandler = form.onsubmit;
+            
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                
+                // 更新技能
+                const newName = document.getElementById('skill-name').value;
+                const newLevel = parseInt(document.getElementById('skill-level').value);
+                
+                // 如果名称改变，检查是否已存在
+                if (newName !== skill.name && portfolioData.skills.some(s => s.name === newName)) {
+                    alert('该技能已存在！');
+                    return;
+                }
+                
+                skill.name = newName;
+                skill.level = newLevel;
+                
+                // 重新渲染技能列表和雷达图
+                renderSkills();
+                renderAdminSkills();
+                initSkillsRadarChart();
+                
+                // 关闭模态框
+                document.getElementById('add-skill-modal').classList.add('hidden');
+                
+                // 重置表单
+                form.reset();
+                
+                // 恢复原始提交处理
+                form.onsubmit = originalSubmitHandler;
+                
+                // 保存到本地存储
+                saveDataToStorage();
+                
+                alert('技能已更新！');
+            };
+            
+            // 显示模态框
+            document.getElementById('add-skill-modal').classList.remove('hidden');
+        }
+
+        // 删除技能
+        function deleteSkill(skillName) {
+            if (confirm('确定要删除这个技能吗？')) {
+                portfolioData.skills = portfolioData.skills.filter(s => s.name !== skillName);
+                
+                // 重新渲染技能列表和雷达图
+                renderSkills();
+                renderAdminSkills();
+                initSkillsRadarChart();
+                
+                // 保存到本地存储
+                saveDataToStorage();
+                
+                alert('技能已删除！');
+            }
+        }
+
+        // 添加技能
+        function addSkill() {
+            const name = document.getElementById('skill-name').value;
+            const level = parseInt(document.getElementById('skill-level').value);
+            
+            // 检查是否已存在
+            if (portfolioData.skills.some(s => s.name === name)) {
+                alert('该技能已存在！');
+                return;
+            }
+            
+            const newSkill = {
+                name,
+                level
+            };
+            
+            portfolioData.skills.push(newSkill);
+            
+            // 重新渲染技能列表和雷达图
+            renderSkills();
+            renderAdminSkills();
+            initSkillsRadarChart();
+            
+            // 关闭模态框
+            document.getElementById('add-skill-modal').classList.add('hidden');
+            
+            // 重置表单
+            document.getElementById('add-skill-form').reset();
+            document.getElementById('skill-level-value').textContent = '50%';
+            
+            // 保存到本地存储
+            saveDataToStorage();
+            
+            alert('技能已添加！');
+        }
+
+        // 渲染管理标签列表
+        function renderAdminTags() {
+            const adminTagsList = document.getElementById('admin-tags-list');
+            adminTagsList.innerHTML = '';
+            
+            portfolioData.tags.forEach(tag => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'bg-dark px-3 py-2 rounded-full flex items-center';
+                tagElement.innerHTML = `
+                    <span class="text-light mr-2">${tag}</span>
+                    <button class="delete-tag-btn text-red-500 hover:text-red-400" data-tag="${tag}">
+                        <i class="fa fa-times"></i>
+                    </button>
+                `;
+                adminTagsList.appendChild(tagElement);
+            });
+            
+            // 添加删除标签按钮点击事件
+            document.querySelectorAll('.delete-tag-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tag = this.getAttribute('data-tag');
+                    deleteTag(tag);
+                });
+            });
+        }
+
+        // 删除标签
+        function deleteTag(tag) {
+            if (confirm(`确定要删除标签"${tag}"吗？`)) {
+                portfolioData.tags = portfolioData.tags.filter(t => t !== tag);
+                
+                // 重新渲染标签列表
+                renderTagsCloud();
+                renderAdminTags();
+                
+                alert('标签已删除！');
+            }
+        }
+
+        // 添加标签
+        function addTag() {
+            const name = document.getElementById('tag-name').value.trim();
+            
+            // 检查是否已存在
+            if (portfolioData.tags.includes(name)) {
+                alert('该标签已存在！');
+                return;
+            }
+            
+            portfolioData.tags.push(name);
+            
+            // 重新渲染标签列表
+            renderTagsCloud();
+            renderAdminTags();
+            
+            // 关闭模态框
+            document.getElementById('add-tag-modal').classList.add('hidden');
+            
+            // 重置表单
+            document.getElementById('add-tag-form').reset();
+            
+            alert('标签已添加！');
+        }
+
+        // 初始化鼠标跟随霓虹字母效果
+        function initMouseFollower() {
+            const mouseFollower = document.getElementById('mouse-follower');
+            const keyboardCharacters = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_=+[]{}|\\;:'\",.<>/?");
+            
+            let mouseX = 0;
+            let mouseY = 0;
+            let followerX = 0;
+            let followerY = 0;
+            let isMoving = false;
+            let trailElements = [];
+            
+            // 清理过期的拖尾元素
+            function cleanupTrails() {
+                trailElements = trailElements.filter(trail => {
+                    if (trail.element && trail.element.parentNode) {
+                        const opacity = parseFloat(getComputedStyle(trail.element).opacity);
+                        const lifetime = trail.lifetime ?? 1000;
+                        if (opacity <= 0.1 || Date.now() - trail.createTime > lifetime) {
+                            trail.element.remove();
+                            return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            
+            // 创建拖尾字母
+            function createTrail(x, y, letter) {
+                const trail = document.createElement('div');
+                trail.className = 'letter-trail';
+                trail.textContent = letter;
+
+                const hue = Math.floor(Math.random() * 360);
+                const secondaryHue = (hue + 40 + Math.random() * 60) % 360;
+                const tertiaryHue = (hue + 120) % 360;
+                const baseColor = `hsl(${hue}, 95%, 60%)`;
+                const glowColor = `hsla(${hue}, 95%, 72%, 0.85)`;
+                const gradient = `linear-gradient(135deg, ${baseColor}, hsl(${secondaryHue}, 95%, 65%), hsl(${tertiaryHue}, 95%, 70%))`;
+                const scale = (0.85 + Math.random() * 0.7).toFixed(2);
+                const rotation = `${Math.floor(Math.random() * 360)}deg`;
+                const duration = `${(0.75 + Math.random() * 0.65).toFixed(2)}s`;
+                const fontSize = `${(16 + Math.random() * 14).toFixed(1)}px`;
+                const backgroundShift = `${Math.floor(Math.random() * 100)}% 50%`;
+                const lifetime = parseFloat(duration) * 1000 + 250;
+
+                trail.style.left = x + 'px';
+                trail.style.top = y + 'px';
+                trail.style.setProperty('--trail-color', baseColor);
+                trail.style.setProperty('--trail-glow', glowColor);
+                trail.style.setProperty('--trail-gradient', gradient);
+                trail.style.setProperty('--trail-scale', scale);
+                trail.style.setProperty('--trail-rotate', rotation);
+                trail.style.setProperty('--trail-duration', duration);
+                trail.style.setProperty('--trail-font-size', fontSize);
+                trail.style.backgroundPosition = backgroundShift;
+
+                document.body.appendChild(trail);
+                
+                trailElements.push({
+                    element: trail,
+                    createTime: Date.now(),
+                    lifetime
+                });
+                
+                setTimeout(() => {
+                    if (trail.parentNode) {
+                        trail.remove();
+                    }
+                }, lifetime);
+            }
+            
+            // 生成随机字母或代码词汇
+            function getRandomContent() {
+                return keyboardCharacters[Math.floor(Math.random() * keyboardCharacters.length)];
+            }
+            
+            // 更新鼠标跟随元素位置
+            function updateFollower() {
+                // 平滑跟随效果
+                const speed = 0.1;
+                followerX += (mouseX - followerX) * speed;
+                followerY += (mouseY - followerY) * speed;
+                
+                mouseFollower.style.left = followerX + 'px';
+                mouseFollower.style.top = followerY + 'px';
+                
+                // 清理过期的拖尾元素
+                if (Math.random() < 0.1) {
+                    cleanupTrails();
+                }
+                
+                requestAnimationFrame(updateFollower);
+            }
+            
+            // 鼠标移动事件
+            document.addEventListener('mousemove', function(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                if (!isMoving) {
+                    isMoving = true;
+                    mouseFollower.style.opacity = '1';
+                }
+                
+                // 更新跟随字母内容
+                const content = getRandomContent();
+                if (content.length === 1) {
+                    mouseFollower.innerHTML = `<span class="neon-letter">${content}</span>`;
+                } else {
+                    // 对于词汇，每个字母单独包装
+                    mouseFollower.innerHTML = content.split('').map(char => 
+                        `<span class="neon-letter">${char}</span>`
+                    ).join('');
+                }
+                
+                // 创建拖尾效果（降低频率以提高性能）
+                if (Math.random() < 0.3) {
+                    const trailContent = keyboardCharacters[Math.floor(Math.random() * keyboardCharacters.length)];
+                    createTrail(
+                        e.clientX + (Math.random() - 0.5) * 30,
+                        e.clientY + (Math.random() - 0.5) * 30,
+                        trailContent
+                    );
+                }
+                
+                // 重置隐藏定时器
+                clearTimeout(window.mouseHideTimer);
+                window.mouseHideTimer = setTimeout(() => {
+                    isMoving = false;
+                    mouseFollower.style.opacity = '0';
+                }, 1000);
+            });
+            
+            // 鼠标离开窗口时隐藏
+            document.addEventListener('mouseleave', function() {
+                isMoving = false;
+                mouseFollower.style.opacity = '0';
+            });
+            
+            // 鼠标进入窗口时显示
+            document.addEventListener('mouseenter', function() {
+                isMoving = true;
+                mouseFollower.style.opacity = '1';
+            });
+            
+            // 点击时创建特殊效果
+            document.addEventListener('click', function(e) {
+                // 创建爆炸式效果
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        const angle = (Math.PI * 2 * i) / 8;
+                        const distance = 50;
+                        const x = e.clientX + Math.cos(angle) * distance;
+                        const y = e.clientY + Math.sin(angle) * distance;
+                        const letter = keyboardCharacters[Math.floor(Math.random() * keyboardCharacters.length)];
+                        createTrail(x, y, letter);
+                    }, i * 50);
+                }
+                
+                // 临时改变跟随字母的样式
+                mouseFollower.style.transform = 'scale(1.5)';
+                mouseFollower.style.filter = 'hue-rotate(90deg)';
+                
+                setTimeout(() => {
+                    mouseFollower.style.transform = 'scale(1)';
+                    mouseFollower.style.filter = 'none';
+                }, 300);
+            });
+            
+            // 开始更新循环
+            updateFollower();
+            
+            // 添加键盘事件，按键时创建字母
+            document.addEventListener('keydown', function(e) {
+                if (e.key.length === 1) {
+                    createTrail(
+                        mouseX + (Math.random() - 0.5) * 40,
+                        mouseY + (Math.random() - 0.5) * 40,
+                        e.key.toUpperCase()
+                    );
+                }
+            });
+        }
+    </script>
+
+
+</body></html>

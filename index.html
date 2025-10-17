@@ -30,6 +30,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <!-- EmailJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- 语言文件 -->
+    <script src="./lang/zh-CN.js"></script>
+    <script src="./lang/en-US.js"></script>
+    <script src="./lang/language-manager.js"></script>
     <!-- 统一的 Tailwind 配置 -->
     <script>
         tailwind.config = {
@@ -241,6 +245,11 @@
                 <a href="#contact" class="nav-link text-light-dark hover:text-primary">联系我</a>
             </div>
             <div class="flex items-center space-x-4">
+                <!-- 语言切换按钮 -->
+                <button id="language-toggle" class="text-light-dark hover:text-primary transition-colors duration-300 flex items-center space-x-1" title="切换到英文">
+                    <i class="fa fa-globe text-lg"></i>
+                    <span class="hidden sm:inline text-sm">English</span>
+                </button>
                 <button id="admin-toggle" class="text-light-dark hover:text-primary">
                     <i class="fa fa-cog text-xl"></i>
                 </button>
@@ -275,28 +284,28 @@
                     <div class="md:w-1/2 mb-8 md:mb-0">
                         <div class="text-center md:text-left">
                             <h1 class="text-4xl md:text-6xl font-bold mb-4">
-                                <span class="text-white">你好，我是</span>
-                                <span class="text-primary text-shadow">丁鸿磁Akink</span>
+                                <span class="text-white" data-text="hero-greeting">你好，我是</span>
+                                <span class="text-primary text-shadow" data-text="hero-name">丁鸿磁Akink</span>
                             </h1>
                             <p class="text-xl md:text-2xl mb-6 text-light-dark">
-                                <span class="typing-effect" id="typing-text">全栈软件开发工程师 | AI 产品创新者</span>
+                                <span class="typing-effect typing-text" id="typing-text" data-text="hero-title">全栈软件开发工程师</span>
                             </p>
                             <div class="code-block p-4 rounded-md mb-6">
-                                <pre class="text-sm md:text-base text-primary"><span class="text-light-dark">// 关于我</span>
+                                <pre class="text-sm md:text-base text-primary"><span class="text-light-dark" data-text="hero-code-comment">// 关于我</span>
 const profile = {
-  title: <span class="text-secondary">"全栈软件开发工程师"</span>,
-  focus: <span class="text-secondary">"AI 大模型应用开发"</span>,
-  location: <span class="text-secondary">"中国 · 上海 / 南京 / 温哥华"</span>,
-  motto: <span class="text-secondary">"技术 x 人文，打造有温度的智能体验"</span>
+  title: <span class="text-secondary" data-text="hero-subtitle">"专注于创建高质量的软件产品"</span>,
+  focus: <span class="text-secondary" data-text="hero-focus">"AI 大模型应用开发"</span>,
+  location: <span class="text-secondary" data-text="hero-location">"中国 · 上海 / 南京 / 温哥华"</span>,
+  motto: <span class="text-secondary" data-text="hero-motto">"技术 x 人文，打造有温度的智能体验"</span>
 };
                                 </pre>
                             </div>
                             <div class="flex flex-wrap gap-4 justify-center md:justify-start">
                                 <a href="#projects" class="bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300 flex items-center">
-                                    <i class="fa fa-folder-open mr-2"></i> 查看项目
+                                    <i class="fa fa-folder-open mr-2"></i> <span data-text="view-projects">查看项目</span>
                                 </a>
                                 <a href="#contact" class="border border-primary text-primary hover:bg-primary hover:bg-opacity-10 font-bold py-2 px-6 rounded-md transition duration-300 flex items-center">
-                                    <i class="fa fa-envelope mr-2"></i> 联系我
+                                    <i class="fa fa-envelope mr-2"></i> <span data-text="contact-me">联系我</span>
                                 </a>
                             </div>
                         </div>
@@ -316,7 +325,7 @@ const profile = {
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold mb-2 text-primary">
-                        <i class="fa fa-user-circle mr-2"></i>关于我
+                        <i class="fa fa-user-circle mr-2"></i><span data-text="about-title">关于我</span>
                     </h2>
                     <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
@@ -338,27 +347,29 @@ const aboutMe = {
         links: [
             <span class="text-secondary">"LinkedIn: https://www.linkedin.com/in/hongci-ding-2392471a5/"</span>,
             <span class="text-secondary">"GitHub: https://github.com/KonoNeko"</span>
+            <span class="text-secondary">"个人主页: https://kononeko.github.io/"</span>
+
         ],
     traits: [
         <span class="text-secondary">"ENFP-A 团队激励型"</span>,
         <span class="text-secondary">"专业滑雪教练"</span>,
-        <span class="text-secondary">"热衷滑雪/ 咖啡 / 烹饪 / 摄影"</span>
+        <span class="text-secondary">"热衷 滑雪/ 咖啡 / 烹饪 / 摄影"</span>
     ]
 };
 
 <span class="text-light-dark">// 专业总结</span>
 function professionalSummary() {
     return [
-        <span class="text-secondary">"擅长将 AI 能力注入生活场景、智能客服与安全检测产品。"</span>,
+        <span class="text-secondary">"擅长从设计到部署迭代的软件开发全流程、AI 大模型应用微调与开发。"</span>,
         <span class="text-secondary">"兼具创造与执行力，注重用户体验与跨团队协作。"</span>,
-        <span class="text-secondary">"倡导技术与人文融合，打造有温度的智能应用。"</span>
+        <span class="text-secondary">"倡导技术与人文的深度结合，打造有价值的智能应用。"</span>
     ].join(' ');
 }
                         </pre>
                     </div>
                     <div class="mt-8 text-center">
                         <a href="#contact" class="inline-flex items-center text-primary hover:text-secondary transition duration-300">
-                            <span>了解更多关于我</span>
+                            <span data-text="about-learn-more">了解更多关于我</span>
                             <i class="fa fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -371,7 +382,7 @@ function professionalSummary() {
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold mb-2 text-primary">
-                        <i class="fa fa-code mr-2"></i>我的技能
+                        <i class="fa fa-code mr-2"></i><span data-text="skills-title">技能专长</span>
                     </h2>
                     <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
@@ -406,15 +417,15 @@ function professionalSummary() {
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold mb-2 text-primary">
-                        <i class="fa fa-folder-open mr-2"></i>我的项目
+                        <i class="fa fa-folder-open mr-2"></i><span data-text="projects-title">精选项目</span>
                     </h2>
                     <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
                 <!-- 项目筛选 -->
                 <div class="flex flex-wrap justify-center gap-3 mb-8">
-                    <button class="project-filter-btn active bg-primary text-dark px-4 py-2 rounded-md" data-filter="all">全部</button>
-                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="personal">个人项目</button>
-                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="company">公司项目</button>
+                    <button class="project-filter-btn active bg-primary text-dark px-4 py-2 rounded-md" data-filter="all" data-text="project-category-all">全部</button>
+                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="personal" data-text="project-category-personal">个人项目</button>
+                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="company" data-text="project-category-company">公司项目</button>
                 </div>
                 <!-- 项目列表 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-list">
@@ -452,21 +463,21 @@ function professionalSummary() {
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold mb-2 text-primary">
-                        <i class="fa fa-envelope mr-2"></i>联系我
+                        <i class="fa fa-envelope mr-2"></i><span data-text="contact-title">联系我</span>
                     </h2>
                     <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     <!-- 联系信息 -->
                     <div class="bg-dark p-6 rounded-md">
-                        <h3 class="text-xl font-bold mb-6 text-secondary">联系信息</h3>
+                        <h3 class="text-xl font-bold mb-6 text-secondary" data-text="contact-info-title">联系信息</h3>
                         <div class="space-y-4">
                             <div class="flex items-center">
                                 <div class="w-12 h-12 bg-dark-lighter rounded-full flex items-center justify-center mr-4">
                                     <i class="fa fa-envelope text-primary text-xl"></i>
                                 </div>
                                 <div>
-                                    <p class="text-light-dark">邮箱</p>
+                                    <p class="text-light-dark" data-text="contact-info-email">邮箱</p>
                                     <p class="text-light"><a href="mailto:20067227@qq.com" class="hover:text-primary" id="contact-email">20067227@qq.com</a></p>
                                 </div>
                             </div>
@@ -475,7 +486,7 @@ function professionalSummary() {
                                     <i class="fa fa-wechat text-primary text-xl"></i>
                                 </div>
                                 <div>
-                                    <p class="text-light-dark">微信</p>
+                                    <p class="text-light-dark" data-text="contact-info-wechat">微信</p>
                                     <p class="text-light" id="contact-wechat">dhc20067227</p>
                                 </div>
                             </div>
@@ -484,7 +495,7 @@ function professionalSummary() {
                                     <i class="fa fa-phone text-primary text-xl"></i>
                                 </div>
                                 <div>
-                                    <p class="text-light-dark">电话</p>
+                                    <p class="text-light-dark" data-text="contact-info-phone">电话</p>
                                     <p class="text-light"><a href="tel:+8613705511125" class="hover:text-primary" id="contact-phone">+86 137 0551 1125</a></p>
                                 </div>
                             </div>
@@ -493,7 +504,7 @@ function professionalSummary() {
                                     <i class="fa fa-map-marker text-primary text-xl"></i>
                                 </div>
                                 <div>
-                                    <p class="text-light-dark">工作地点</p>
+                                    <p class="text-light-dark" data-text="contact-info-location">工作地点</p>
                                     <p class="text-light" id="contact-location">中国 · 上海 / 加拿大 · 温哥华</p>
                                 </div>
                             </div>
@@ -509,7 +520,7 @@ function professionalSummary() {
                         </div>
                         <!-- 社交媒体 -->
                         <div class="mt-8">
-                            <h4 class="text-lg font-bold mb-4 text-secondary">社交媒体</h4>
+                            <h4 class="text-lg font-bold mb-4 text-secondary" data-text="contact-info-social">社交媒体</h4>
                             <div class="flex space-x-4">
                                 <a href="#" class="w-10 h-10 bg-dark-lighter rounded-full flex items-center justify-center hover:bg-primary hover:text-dark transition duration-300" aria-label="GitHub" data-social="github">
                                     <i class="fa fa-github text-xl"></i>
@@ -528,26 +539,26 @@ function professionalSummary() {
                     </div>
                     <!-- 联系表单 -->
                     <div class="bg-dark p-6 rounded-md">
-                        <h3 class="text-xl font-bold mb-6 text-secondary">发送消息</h3>
+                        <h3 class="text-xl font-bold mb-6 text-secondary" data-text="contact-form-title">发送消息</h3>
                         <form id="contact-form">
                             <div class="mb-4">
-                                <label for="name" class="block text-light-dark mb-2">姓名</label>
-                                <input type="text" id="name" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                                <label for="name" class="block text-light-dark mb-2" data-text="form-name">姓名</label>
+                                <input type="text" id="name" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" data-text="form-name" placeholder="姓名">
                             </div>
                             <div class="mb-4">
-                                <label for="email" class="block text-light-dark mb-2">邮箱</label>
-                                <input type="email" id="email" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                                <label for="email" class="block text-light-dark mb-2" data-text="form-email">邮箱</label>
+                                <input type="email" id="email" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" data-text="form-email" placeholder="邮箱">
                             </div>
                             <div class="mb-4">
-                                <label for="subject" class="block text-light-dark mb-2">主题</label>
-                                <input type="text" id="subject" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                                <label for="subject" class="block text-light-dark mb-2" data-text="form-subject">主题</label>
+                                <input type="text" id="subject" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" data-text="form-subject" placeholder="主题">
                             </div>
                             <div class="mb-6">
-                                <label for="message" class="block text-light-dark mb-2">消息</label>
-                                <textarea id="message" rows="5" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary"></textarea>
+                                <label for="message" class="block text-light-dark mb-2" data-text="form-message">消息</label>
+                                <textarea id="message" rows="5" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" data-text="form-message" placeholder="消息"></textarea>
                             </div>
                             <button type="submit" class="w-full bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
-                                <i class="fa fa-envelope mr-2"></i>发送消息
+                                <i class="fa fa-envelope mr-2"></i><span data-text="form-send">发送消息</span>
                             </button>
                         </form>
                         

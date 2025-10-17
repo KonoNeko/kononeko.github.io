@@ -1,13 +1,35 @@
 <html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人主页</title>
+    <title>Hongci - 个人主页</title>
+    <!-- 网站图标 -->
+    <link rel="icon" type="image/jpeg" href="./img/icon.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="./img/icon.jpg">
+    <link rel="apple-touch-icon" href="./img/icon.jpg">
+    <!-- SEO 和社交媒体优化 -->
+    <meta name="description" content="全栈软件开发工程师 | AI 产品创新者 - 专注于创建高质量的软件产品">
+    <meta name="keywords" content="全栈开发,软件工程师,AI开发,前端,后端,个人网站">
+    <meta name="author" content="Hongci">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kononeko.github.io/">
+    <meta property="og:title" content="个人主页 - 全栈软件开发工程师">
+    <meta property="og:description" content="全栈软件开发工程师 | AI 产品创新者 - 专注于创建高质量的软件产品">
+    <meta property="og:image" content="https://kononeko.github.io/img/icon.jpg">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://kononeko.github.io/">
+    <meta property="twitter:title" content="个人主页 - 全栈软件开发工程师">
+    <meta property="twitter:description" content="全栈软件开发工程师 | AI 产品创新者 - 专注于创建高质量的软件产品">
+    <meta property="twitter:image" content="https://kononeko.github.io/img/icon.jpg">
     <!-- Tailwind CSS v3 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- 统一的 Tailwind 配置 -->
     <script>
         tailwind.config = {
@@ -216,7 +238,7 @@
                 <a href="#skills" class="nav-link text-light-dark hover:text-primary">技能</a>
                 <a href="#projects" class="nav-link text-light-dark hover:text-primary">项目</a>
                 <a href="#experience" class="nav-link text-light-dark hover:text-primary">经历</a>
-                <a href="#contact" class="nav-link text-light-dark hover:text-primary">联系</a>
+                <a href="#contact" class="nav-link text-light-dark hover:text-primary">联系我</a>
             </div>
             <div class="flex items-center space-x-4">
                 <button id="admin-toggle" class="text-light-dark hover:text-primary">
@@ -254,7 +276,7 @@
                         <div class="text-center md:text-left">
                             <h1 class="text-4xl md:text-6xl font-bold mb-4">
                                 <span class="text-white">你好，我是</span>
-                                <span class="text-primary text-shadow">丁鸿磁</span>
+                                <span class="text-primary text-shadow">丁鸿磁Akink</span>
                             </h1>
                             <p class="text-xl md:text-2xl mb-6 text-light-dark">
                                 <span class="typing-effect" id="typing-text">全栈软件开发工程师 | AI 产品创新者</span>
@@ -264,7 +286,7 @@
 const profile = {
   title: <span class="text-secondary">"全栈软件开发工程师"</span>,
   focus: <span class="text-secondary">"AI 大模型应用开发"</span>,
-  location: <span class="text-secondary">"中国 · 上海/ 南京 / 温哥华"</span>,
+  location: <span class="text-secondary">"中国 · 上海 / 南京 / 温哥华"</span>,
   motto: <span class="text-secondary">"技术 x 人文，打造有温度的智能体验"</span>
 };
                                 </pre>
@@ -320,14 +342,14 @@ const aboutMe = {
     traits: [
         <span class="text-secondary">"ENFP-A 团队激励型"</span>,
         <span class="text-secondary">"专业滑雪教练"</span>,
-        <span class="text-secondary">"热衷咖啡 / 烹饪 / 摄影"</span>
+        <span class="text-secondary">"热衷滑雪/ 咖啡 / 烹饪 / 摄影"</span>
     ]
 };
 
 <span class="text-light-dark">// 专业总结</span>
 function professionalSummary() {
     return [
-        <span class="text-secondary">"擅长将 AI 能力注入物流调度、智能客服与安全检测产品。"</span>,
+        <span class="text-secondary">"擅长将 AI 能力注入生活场景、智能客服与安全检测产品。"</span>,
         <span class="text-secondary">"兼具创造与执行力，注重用户体验与跨团队协作。"</span>,
         <span class="text-secondary">"倡导技术与人文融合，打造有温度的智能应用。"</span>
     ].join(' ');
@@ -391,9 +413,8 @@ function professionalSummary() {
                 <!-- 项目筛选 -->
                 <div class="flex flex-wrap justify-center gap-3 mb-8">
                     <button class="project-filter-btn active bg-primary text-dark px-4 py-2 rounded-md" data-filter="all">全部</button>
-                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="frontend">前端</button>
-                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="backend">后端</button>
-                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="fullstack">全栈</button>
+                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="personal">个人项目</button>
+                    <button class="project-filter-btn bg-dark-lighter text-light px-4 py-2 rounded-md" data-filter="company">公司项目</button>
                 </div>
                 <!-- 项目列表 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-list">
@@ -414,8 +435,8 @@ function professionalSummary() {
                 <div class="max-w-3xl mx-auto">
                     <!-- 时间线 -->
                     <div class="relative">
-                        <!-- 时间线轴 -->
-                        <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary"></div>
+                        <!-- 时间线轴 - 在手机端隐藏 -->
+                        <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary hidden md:block"></div>
                         
                         <!-- 经历列表 -->
                         <div class="space-y-12" id="experience-timeline">
@@ -451,6 +472,15 @@ function professionalSummary() {
                             </div>
                             <div class="flex items-center">
                                 <div class="w-12 h-12 bg-dark-lighter rounded-full flex items-center justify-center mr-4">
+                                    <i class="fa fa-wechat text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-light-dark">微信</p>
+                                    <p class="text-light" id="contact-wechat">dhc20067227</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-dark-lighter rounded-full flex items-center justify-center mr-4">
                                     <i class="fa fa-phone text-primary text-xl"></i>
                                 </div>
                                 <div>
@@ -473,7 +503,7 @@ function professionalSummary() {
                                 </div>
                                 <div>
                                     <p class="text-light-dark">个人标签</p>
-                                    <p class="text-light" id="contact-bio-summary">30 岁 · ENFP-A · 热爱 AI &amp; 户外运动</p>
+                                    <p class="text-light" id="contact-bio-summary">ENFP-A · 热爱 AI &amp; 户外运动</p>
                                 </div>
                             </div>
                         </div>
@@ -517,9 +547,23 @@ function professionalSummary() {
                                 <textarea id="message" rows="5" class="w-full bg-dark-lighter border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary"></textarea>
                             </div>
                             <button type="submit" class="w-full bg-primary hover:bg-opacity-80 text-dark font-bold py-2 px-6 rounded-md transition duration-300">
-                                发送消息
+                                <i class="fa fa-envelope mr-2"></i>发送消息
                             </button>
                         </form>
+                        
+                        <!-- 备用联系方式 -->
+                        <div class="mt-4 p-3 bg-dark-lighter rounded-md">
+                            <p class="text-light-dark text-sm mb-2">如果上述表单无法使用，您也可以：</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="copyEmail()" class="text-primary hover:text-secondary text-sm flex items-center">
+                                    <i class="fa fa-copy mr-1"></i>复制邮箱
+                                </button>
+                                <span class="text-light-dark">|</span>
+                                <a href="mailto:20067227@qq.com" class="text-primary hover:text-secondary text-sm flex items-center">
+                                    <i class="fa fa-envelope mr-1"></i>直接发邮件
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -637,6 +681,10 @@ function professionalSummary() {
                             <div>
                                 <label for="admin-email" class="block text-light-dark mb-2">邮箱</label>
                                 <input type="email" id="admin-email" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label for="admin-wechat" class="block text-light-dark mb-2">微信</label>
+                                <input type="text" id="admin-wechat" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary">
                             </div>
                             <div>
                                 <label for="admin-github" class="block text-light-dark mb-2">GitHub</label>
@@ -781,9 +829,8 @@ function professionalSummary() {
                     <div class="mb-4">
                         <label for="project-category" class="block text-light-dark mb-2">项目分类</label>
                         <select id="project-category" class="w-full bg-dark border border-dark-lighter rounded-md px-4 py-2 text-light focus:outline-none focus:border-primary" required="">
-                            <option value="frontend">前端</option>
-                            <option value="backend">后端</option>
-                            <option value="fullstack">全栈</option>
+                            <option value="personal">个人项目</option>
+                            <option value="company">公司项目</option>
                         </select>
                     </div>
                     <div class="mb-4">
@@ -944,6 +991,7 @@ function professionalSummary() {
                 focus: "AI 大模型应用开发 · 系统架构",
                 location: "中国 · 上海 / 加拿大 · 温哥华",
                 email: "20067227@qq.com",
+                wechat: "dhc20067227",
                 phone: "+86 137 0551 1125",
                 github: "https://github.com/dinghongci",
                 linkedin: "https://www.linkedin.com/in/dinghongci",
@@ -975,7 +1023,7 @@ function professionalSummary() {
                     id: 1,
                     title: "喵卜灵 · AI 自我探索占卜平台",
                     description: "融合塔罗牌与现代哲学的自我探索平台，基于 DeepSeek 大模型进行语料 fine-tuning，提供在线抽牌、语义检索与个性化解读。",
-                    category: "backend",
+                    category: "personal",
                     tech: ["React", "Tailwind CSS", "FastAPI", "PyTorch", "DeepSeek", "MongoDB"],
                     image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
                     github: "#"
@@ -984,7 +1032,7 @@ function professionalSummary() {
                     id: 2,
                     title: "猫探 · AI 智能安全检测平台",
                     description: "集成 URL/文本钓鱼检测、邮箱筛查与 Deepfake 视频分析的安全检测平台，结合 DistilBERT + LoRA 微调与自研特征提取，支持跨渠道威胁识别。",
-                    category: "fullstack",
+                    category: "personal",
                     tech: ["Python", "FastAPI", "PyTorch", "Machine Learning", "DistilBERT", "LoRA", "Redis"],
                     image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
                     github: "#"
@@ -993,10 +1041,19 @@ function professionalSummary() {
                     id: 3,
                     title: "UniUni 物流调度中心",
                     description: "服务北美物流网络的调度与质量管理系统，涵盖订单整合、追踪继承与 AI 客服集成。",
-                    category: "fullstack",
+                    category: "company",
                     tech: ["Laravel", "React", "AWS", "Redis", "Twilio", "ChatGPT API"],
                     image: "https://images.unsplash.com/photo-1527430253228-e93688616381?auto=format&fit=crop&w=1200&q=80",
                     github: "#"
+                },
+                {
+                    id: 4,
+                    title: "个人作品集网站 · 响应式前端作品展示",
+                    description: "基于 Tailwind CSS 构建的现代化个人作品集网站，集成 EmailJS 邮件服务、Chart.js 数据可视化、密码保护的后台管理系统。支持项目动态筛选、技能雷达图展示、移动端适配，并具备完整的数据持久化功能。",
+                    category: "personal",
+                    tech: ["HTML5", "Tailwind CSS", "JavaScript ES6", "EmailJS", "Chart.js", "GitHub Pages", "Responsive Design"],
+                    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80",
+                    github: "https://github.com/KonoNeko/kononeko.github.io"
                 }
             ],
             experience: [
@@ -1064,6 +1121,76 @@ function professionalSummary() {
         // 在页面加载时恢复数据
         loadDataFromStorage();
 
+        // 通知函数
+        function showNotification(message, type = 'info') {
+            // 移除已存在的通知
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = `notification fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg transform transition-all duration-300 ${
+                type === 'error' ? 'bg-red-600 border-red-500' : 
+                type === 'success' ? 'bg-green-600 border-green-500' : 
+                'bg-blue-600 border-blue-500'
+            } border text-white`;
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fa ${type === 'error' ? 'fa-exclamation-circle' : type === 'success' ? 'fa-check-circle' : 'fa-info-circle'} mr-2"></i>
+                    <span>${message}</span>
+                    <button class="ml-4 text-white hover:text-gray-300" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 3000);
+        }
+
+        // 复制邮箱地址功能
+        function copyEmail() {
+            const email = '20067227@qq.com';
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(email).then(() => {
+                    showNotification('邮箱地址已复制到剪贴板！', 'success');
+                }).catch(() => {
+                    fallbackCopyEmail(email);
+                });
+            } else {
+                fallbackCopyEmail(email);
+            }
+        }
+        
+        function fallbackCopyEmail(email) {
+            const textArea = document.createElement('textarea');
+            textArea.value = email;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showNotification('邮箱地址已复制到剪贴板！', 'success');
+            } catch (err) {
+                showNotification('复制失败，邮箱地址: 20067227@qq.com', 'error');
+            }
+            textArea.remove();
+        }
+
         // DOM 加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
             // 初始化页面
@@ -1074,6 +1201,9 @@ function professionalSummary() {
             
             // 初始化后台管理
             initAdminPanel();
+            
+            // 初始化系统设置
+            initSystemSettings();
             
             // 初始化鼠标跟随效果
             initMouseFollower();
@@ -1157,26 +1287,142 @@ function professionalSummary() {
                 });
             });
             
+            // 初始化EmailJS - 请替换为您的实际配置
+            const EMAILJS_CONFIG = {
+                PUBLIC_KEY: 'NdxoncxxvdSdF11Lg',  // 您的EmailJS公钥
+                SERVICE_ID: 'service_pxovpd8',     // 您的邮件服务ID
+                TEMPLATE_ID: 'template_2ss903h'    // 您的邮件模板ID
+            };
+            
+            // 初始化EmailJS
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+            }
+            
             // 联系表单提交
             document.getElementById('contact-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 // 获取表单数据
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const subject = document.getElementById('subject').value;
-                const message = document.getElementById('message').value;
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
                 
-                // 简单验证
+                // 表单验证
                 if (!name || !email || !subject || !message) {
-                    alert('请填写所有字段');
+                    showNotification('请填写所有字段', 'error');
                     return;
                 }
                 
-                // 模拟表单提交
-                alert('消息已发送！我们会尽快回复您。');
-                this.reset();
+                // 邮箱格式验证
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showNotification('请输入有效的邮箱地址', 'error');
+                    return;
+                }
+                
+                // 显示发送中状态
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>发送中...';
+                submitBtn.disabled = true;
+                
+                // 尝试使用EmailJS发送邮件
+                if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+                    console.log('尝试使用EmailJS发送...');
+                    sendEmailViaEmailJS(name, email, subject, message, submitBtn, originalText, this);
+                } else {
+                    console.log('EmailJS未配置，使用mailto方法...');
+                    // 直接使用mailto方法
+                    sendEmailViaMailto(name, email, subject, message, submitBtn, originalText, this);
+                }
             });
+            
+            // EmailJS发送方法
+            function sendEmailViaEmailJS(name, email, subject, message, submitBtn, originalText, form) {
+                console.log('正在使用EmailJS发送邮件...');
+                console.log('配置:', EMAILJS_CONFIG);
+                
+                const templateParams = {
+                    from_name: name,
+                    from_email: email,
+                    subject: subject,
+                    message: message,
+                    to_email: '20067227@qq.com',
+                    reply_to: email,
+                    send_time: new Date().toLocaleString('zh-CN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZone: 'Asia/Shanghai'
+                    })
+                };
+                
+                console.log('邮件参数:', templateParams);
+                
+                emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, templateParams)
+                    .then(function(response) {
+                        console.log('EmailJS 发送成功:', response);
+                        console.log('状态码:', response.status);
+                        console.log('响应文本:', response.text);
+                        showNotification('消息发送成功！我会尽快回复您。', 'success');
+                        form.reset();
+                    })
+                    .catch(function(error) {
+                        console.error('EmailJS 发送失败:', error);
+                        console.error('错误详情:', error.text || error.message);
+                        console.error('错误状态:', error.status);
+                        
+                        // 显示具体错误信息
+                        let errorMessage = 'EmailJS发送失败：';
+                        if (error.status === 400) {
+                            errorMessage += '请求参数错误，请检查模板配置';
+                        } else if (error.status === 401) {
+                            errorMessage += '认证失败，请检查Public Key';
+                        } else if (error.status === 403) {
+                            errorMessage += '权限不足，请检查服务配置';
+                        } else if (error.status === 404) {
+                            errorMessage += '服务或模板不存在';
+                        } else {
+                            errorMessage += error.text || error.message || '未知错误';
+                        }
+                        
+                        showNotification(errorMessage, 'error');
+                        
+                        // 如果EmailJS失败，回退到mailto
+                        setTimeout(() => {
+                            console.log('回退到mailto方法...');
+                            sendEmailViaMailto(name, email, subject, message, submitBtn, originalText, form);
+                        }, 2000);
+                        return;
+                    })
+                    .finally(function() {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    });
+            }
+            
+            // Mailto发送方法（备用）
+            function sendEmailViaMailto(name, email, subject, message, submitBtn, originalText, form) {
+                const mailtoLink = `mailto:20067227@qq.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`姓名: ${name}\n邮箱: ${email}\n\n消息内容:\n${message}`)}`;
+                
+                try {
+                    window.location.href = mailtoLink;
+                    setTimeout(() => {
+                        showNotification('邮件客户端已打开，请在邮件客户端中发送邮件', 'success');
+                        form.reset();
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 1000);
+                } catch (error) {
+                    showNotification('无法打开邮件客户端，请直接发送邮件到: 20067227@qq.com', 'error');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
             
             // 后台管理切换
             document.getElementById('admin-toggle').addEventListener('click', function() {
@@ -1404,7 +1650,7 @@ function professionalSummary() {
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-xl font-bold text-secondary">${project.title}</h3>
                             <span class="bg-dark-lighter text-light px-2 py-1 rounded text-xs">
-                                ${project.category === 'frontend' ? '前端' : project.category === 'backend' ? '后端' : '全栈'}
+                                ${project.category === 'personal' ? '个人项目' : '公司项目'}
                             </span>
                         </div>
                         <p class="text-light-dark mb-4">${project.description}</p>
@@ -1462,9 +1708,12 @@ function professionalSummary() {
             experiences.forEach((exp, index) => {
                 const isLeft = index % 2 === 0;
                 const experienceItem = document.createElement('div');
-                experienceItem.className = `relative flex ${isLeft ? 'justify-end' : ''}`;
+                
+                // 响应式布局：桌面端使用时间线布局，移动端使用简单列表
+                experienceItem.className = `relative flex justify-center md:${isLeft ? 'justify-end' : 'justify-start'}`;
+                
                 experienceItem.innerHTML = `
-                    <div class="w-5/12 ${isLeft ? 'text-right' : ''}">
+                    <div class="w-full md:w-5/12 ${isLeft ? 'md:text-right' : ''}">
                         <div class="bg-dark-light p-6 rounded-md">
                             <h3 class="text-xl font-bold text-secondary">${exp.title}</h3>
                             <p class="text-primary mb-2">${exp.company}</p>
@@ -1472,7 +1721,8 @@ function professionalSummary() {
                             <p class="text-light">${exp.description}</p>
                         </div>
                     </div>
-                    <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-primary rounded-full border-4 border-dark-light"></div>
+                    <!-- 时间线节点 - 只在桌面端显示 -->
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-primary rounded-full border-4 border-dark-light hidden md:block"></div>
                 `;
                 timeline.appendChild(experienceItem);
             });
@@ -1500,6 +1750,11 @@ function professionalSummary() {
             if (emailLink && profile.email) {
                 emailLink.textContent = profile.email;
                 emailLink.setAttribute('href', `mailto:${profile.email}`);
+            }
+
+            const wechatEl = document.getElementById('contact-wechat');
+            if (wechatEl && profile.wechat) {
+                wechatEl.textContent = profile.wechat;
             }
 
             const phoneLink = document.getElementById('contact-phone');
@@ -1648,7 +1903,6 @@ function professionalSummary() {
             const texts = [
                 "全栈软件开发工程师 | AI 产品创新者",
                 "大模型应用开发 | 智能客服集成",
-                "物流调度 & 安全检测系统架构师",
                 "技术 × 人文 · 打造有温度的体验"
             ];
             
@@ -1708,6 +1962,7 @@ function professionalSummary() {
             document.getElementById('admin-title').value = portfolioData.profile.title;
             document.getElementById('admin-location').value = portfolioData.profile.location;
             document.getElementById('admin-email').value = portfolioData.profile.email;
+            document.getElementById('admin-wechat').value = portfolioData.profile.wechat || '';
             document.getElementById('admin-github').value = portfolioData.profile.github;
             document.getElementById('admin-bio').value = portfolioData.profile.bio;
         }
@@ -1719,6 +1974,7 @@ function professionalSummary() {
             portfolioData.profile.title = document.getElementById('admin-title').value;
             portfolioData.profile.location = document.getElementById('admin-location').value;
             portfolioData.profile.email = document.getElementById('admin-email').value;
+            portfolioData.profile.wechat = document.getElementById('admin-wechat').value;
             portfolioData.profile.github = document.getElementById('admin-github').value;
             portfolioData.profile.bio = document.getElementById('admin-bio').value;
 
@@ -1816,7 +2072,7 @@ function professionalSummary() {
                     </div>
                     <p class="text-xs text-light-dark">
                         <span class="bg-dark-lighter text-light px-2 py-1 rounded text-xs">
-                            ${project.category === 'frontend' ? '前端' : project.category === 'backend' ? '后端' : '全栈'}
+                            ${project.category === 'personal' ? '个人项目' : '公司项目'}
                         </span>
                     </p>
                 `;
@@ -2295,7 +2551,91 @@ function professionalSummary() {
             // 重置表单
             document.getElementById('add-tag-form').reset();
             
+            // 保存到本地存储
+            saveDataToStorage();
+            
             alert('标签已添加！');
+        }
+
+        // 系统设置功能
+        function initSystemSettings() {
+            // 导出数据
+            document.getElementById('export-data-btn').addEventListener('click', function() {
+                const dataStr = JSON.stringify(portfolioData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `portfolio-data-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                alert('数据导出成功！');
+            });
+
+            // 导入数据
+            document.getElementById('import-data-input').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        if (confirm('确定要导入此数据吗？这将覆盖当前所有数据。')) {
+                            Object.assign(portfolioData, importedData);
+                            saveDataToStorage();
+                            
+                            // 重新渲染所有内容
+                            initPage();
+                            fillProfileForm();
+                            renderAdminProjects();
+                            renderAdminExperience();
+                            renderAdminSkills();
+                            renderAdminTags();
+                            
+                            alert('数据导入成功！页面将刷新以显示新数据。');
+                            location.reload();
+                        }
+                    } catch (error) {
+                        alert('导入失败：文件格式不正确');
+                    }
+                };
+                reader.readAsText(file);
+            });
+
+            // 重置数据
+            document.getElementById('reset-data-btn').addEventListener('click', function() {
+                if (confirm('确定要重置所有数据吗？此操作无法撤销！')) {
+                    if (confirm('最后确认：这将清除所有自定义内容，恢复到初始状态。')) {
+                        localStorage.removeItem('portfolioData');
+                        alert('数据已重置！页面将重新加载。');
+                        location.reload();
+                    }
+                }
+            });
+
+            // 更新最后更新时间
+            updateSystemInfo();
+        }
+
+        function updateSystemInfo() {
+            const lastUpdateTime = localStorage.getItem('lastUpdateTime') || '从未更新';
+            document.getElementById('last-update-time').textContent = lastUpdateTime;
+        }
+
+        // 保存数据时更新时间戳
+        function saveDataToStorage() {
+            try {
+                localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+                const now = new Date().toLocaleString('zh-CN');
+                localStorage.setItem('lastUpdateTime', now);
+                console.log('数据已保存到本地存储');
+                updateSystemInfo();
+            } catch (error) {
+                console.error('保存数据失败:', error);
+            }
         }
 
         // 初始化鼠标跟随霓虹字母效果

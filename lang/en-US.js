@@ -39,7 +39,6 @@ const enUS = {
         learnMore: "Learn more about me",
         details: {
             name: "Name",
-            age: "Age",
             location: "Location", 
             email: "Email",
             phone: "Phone",

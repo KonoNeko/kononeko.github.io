@@ -39,7 +39,6 @@ const zhCN = {
         learnMore: "了解更多关于我",
         details: {
             name: "姓名",
-            age: "年龄",
             location: "位置",
             email: "邮箱",
             phone: "电话",

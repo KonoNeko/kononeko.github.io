@@ -1008,7 +1008,6 @@ function professionalSummary() {
                 linkedin: "https://www.linkedin.com/in/dinghongci",
                 website: "#",
                 avatar: "./img/head.jpg",
-                age: 30,
                 bio: "注重用户体验与系统优化，善于将 AI 能力落地为可持续的业务方案。",
                 traits: [
                     "ENFP-A 团队激励型",
@@ -1783,9 +1782,6 @@ function professionalSummary() {
             const bioSummary = document.getElementById('contact-bio-summary');
             if (bioSummary) {
                 const parts = [];
-                if (profile.age) {
-                    parts.push(`${profile.age} 岁`);
-                }
                 if (profile.traits && profile.traits.length) {
                     parts.push(profile.traits.join(' · '));
                 }
